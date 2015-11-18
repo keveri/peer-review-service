@@ -1,0 +1,19 @@
+#!/bin/sh
+
+cd "$(dirname "$0")/.."
+
+stack_url="https://github.com/commercialhaskell/stack"
+
+stack setup &> /dev/null
+if [ $? -eq 0 ]; then
+  echo "==> Stack: OK"
+else
+  echo "==> You need to install 'stack'"
+  echo "==> Check out ${stack_url}"
+  exit 1
+fi
+
+echo "==> Creating app.cfg configuration file"
+cp app.cfg.example app.cfg
+
+echo "==> Setup done!"

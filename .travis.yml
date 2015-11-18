@@ -1,0 +1,13 @@
+language: haskell
+
+sudo: false
+cache:
+  directories:
+  - $HOME/.stack/
+
+install:
+  - stack --no-terminal setup
+  - stack --no-terminal build --only-snapshot
+
+script:
+  - stack --no-terminal test
