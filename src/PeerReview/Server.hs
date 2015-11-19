@@ -28,10 +28,12 @@ appMiddleware = middleware logStdout
 -- Routes for the API.
 apiRoutes :: App ()
 apiRoutes = do
-    get  root                API.doc
-    get  "/peer-reviews"     API.list
-    get  "/peer-reviews/new" API.new
-    post "/peer-reviews"     API.create
+    get root                                         API.doc
+    get "/peer-reviews"                              API.list
+    put ("/peer-reviews/" <//> ":id")                API.review
+    get "/peer-reviews/new"                          API.new
+    get "/peer-reviews/completed"                    API.completed
+    put ("/peer-reviews/" <//> ":id" <//> "/accept") API.accept
 
 -- Join middlewares and API to spock app.
 service :: App ()

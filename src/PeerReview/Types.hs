@@ -20,20 +20,23 @@ type App ctx = SpockCtxM ctx () SessionVal AppState ()
 type Action ctx a = SpockActionCtx ctx () SessionVal AppState a
 
 
-type Email = Text
+type UserID = Text
+type TaskID = Text
 
-data Task = Task
-    { tContent :: Text
-    , tId      :: Int
+data ReviewTask = ReviewTask
+    { rtContent :: Text
+    , rtTaskID  :: TaskID
     } deriving (Show, Generic)
-instance FromJSON Task
-instance ToJSON Task
+instance FromJSON ReviewTask
+instance ToJSON ReviewTask
 
 data PeerReview = PeerReview
-    { prTask          :: Task
-    , prComment       :: Text
-    , prScore         :: Int
-    , prReviewerEmail :: Email
+    { prTask       :: ReviewTask
+    , prComment    :: Text
+    , prScore      :: Int
+    , prReviewerID :: UserID
+    , prReviewed   :: Bool
+    , prAccepted   :: Bool
     } deriving (Show, Generic)
 instance FromJSON PeerReview
 instance ToJSON PeerReview

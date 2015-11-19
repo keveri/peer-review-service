@@ -3,20 +3,28 @@ module PeerReview.Core
     ( findTaskToReview
     , listReviewsForUser
     , createReview
+    , acceptReview
+    , completedReviews
     ) where
 
 import           PeerReview.Types
 
 -- Find reviewable task for given user.
-findTaskToReview :: Email -> Task
-findTaskToReview _ = Task "wat" 1
+findTaskToReview :: UserID -> ReviewTask
+findTaskToReview _ = ReviewTask "wat" "1"
 
 -- List all reviews done by given user.
-listReviewsForUser :: Email -> [PeerReview]
-listReviewsForUser _ =
-    [ PeerReview (Task "1" 1) "" 1 ""
-    ]
+listReviewsForUser :: UserID -> [PeerReview]
+listReviewsForUser _ = []
 
 -- Create new PeerReview.
 createReview :: PeerReview -> PeerReview
 createReview pr = pr
+
+-- Mark review as accepted.
+acceptReview :: PeerReview -> PeerReview
+acceptReview pr = pr
+
+-- List of completed reviews.
+completedReviews :: [PeerReview]
+completedReviews = []
