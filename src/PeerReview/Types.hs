@@ -4,7 +4,6 @@ module PeerReview.Types where
 import           Data.Aeson
 import           Data.Text      (Text)
 import           GHC.Generics
-
 import           Web.Spock.Safe
 
 data AppConfig = AppConfig
@@ -12,13 +11,23 @@ data AppConfig = AppConfig
     }
 
 data AppState = AppState
-    { foo :: Int
+    { asEnv :: Env
     }
 
 type SessionVal = Maybe SessionId
-type App ctx = SpockCtxM ctx () SessionVal AppState ()
+type WebApp ctx = SpockCtxM ctx () SessionVal AppState ()
 type Action ctx a = SpockActionCtx ctx () SessionVal AppState a
 
+
+-- Interface for different data sources.
+data DataSource = DataSource
+    { findTask         :: TaskID -> IO ReviewTask
+    , findTasksForUser :: UserID -> IO [ReviewTask]
+    }
+
+data Env = Env
+    { eDataSource :: DataSource
+    }
 
 type UserID = Text
 type TaskID = Text

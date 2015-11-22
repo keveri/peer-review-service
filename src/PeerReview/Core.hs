@@ -10,21 +10,23 @@ module PeerReview.Core
 import           PeerReview.Types
 
 -- Find reviewable task for given user.
-findTaskToReview :: UserID -> ReviewTask
-findTaskToReview _ = ReviewTask "wat" "1" "2"
+findTaskToReview :: Env -> UserID -> IO ReviewTask
+findTaskToReview env uid = do
+    let f = findTask $ eDataSource env
+    f uid
 
 -- List all reviews done by given user.
-listReviewsForUser :: UserID -> [PeerReview]
-listReviewsForUser _ = []
+listReviewsForUser :: UserID -> IO [PeerReview]
+listReviewsForUser _ = return []
 
 -- Create new PeerReview.
-createReview :: PeerReview -> PeerReview
-createReview pr = pr
+createReview :: PeerReview -> IO PeerReview
+createReview = return
 
 -- Mark review as accepted.
-acceptReview :: PeerReview -> PeerReview
-acceptReview pr = pr
+acceptReview :: PeerReview -> IO PeerReview
+acceptReview = return
 
 -- List of completed reviews.
-completedReviews :: [PeerReview]
-completedReviews = []
+completedReviews :: IO [PeerReview]
+completedReviews = return []
