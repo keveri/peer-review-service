@@ -11,7 +11,7 @@ import           PeerReview.Types
 
 -- Find reviewable task for given user.
 findTaskToReview :: UserID -> ReviewTask
-findTaskToReview _ = ReviewTask "wat" "1"
+findTaskToReview _ = ReviewTask "wat" "1" "2"
 
 -- List all reviews done by given user.
 listReviewsForUser :: UserID -> [PeerReview]
