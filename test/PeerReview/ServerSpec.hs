@@ -6,10 +6,11 @@ module PeerReview.ServerSpec
 
 import           Test.Hspec
 import           Test.Hspec.Wai
-import           Web.Spock.Safe    (spock)
+import           Web.Spock.Safe                (spock)
 import           Web.Spock.Shared
 
-import           PeerReview.Server (service)
+import           PeerReview.DataSource.Testing as Testing
+import           PeerReview.Server             (service)
 import           PeerReview.Types
 
 main :: IO ()
@@ -23,5 +24,5 @@ spec = with app $
 
 app = spockAsApp $ spock spockCfg service
   where
-    state    = AppState 0
+    state    = AppState $ Env Testing.dataSource
     spockCfg = defaultSpockCfg Nothing PCNoDatabase state
