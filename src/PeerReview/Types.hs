@@ -11,8 +11,17 @@ import qualified Database.PostgreSQL.Simple.ToField   as PG
 import qualified Database.PostgreSQL.Simple.ToRow     as PG
 import           Web.Spock.Safe
 
+data DBInfo = DBInfo
+    { dbHost :: Text
+    , dbPort :: Int
+    , dbUser :: Text
+    , dbPass :: Text
+    , dbName :: Text
+    }
+
 data AppConfig = AppConfig
     { acPort :: Int
+    , acDB   :: DBInfo
     }
 
 data AppState = AppState
