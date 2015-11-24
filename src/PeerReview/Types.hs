@@ -1,9 +1,8 @@
-{-# LANGUAGE DeriveGeneric #-}
+{-# LANGUAGE OverloadedStrings #-}
 module PeerReview.Types where
 
 import           Data.Aeson
 import           Data.Text      (Text)
-import           GHC.Generics
 import           Web.Spock.Safe
 
 data AppConfig = AppConfig
@@ -35,24 +34,48 @@ type TaskID = Text
 data ReviewStatus = Waiting
                   | Reviewed
                   | Accepted
-                  deriving (Show, Generic)
-instance FromJSON ReviewStatus
-instance ToJSON ReviewStatus
+                  deriving (Show)
 
 data ReviewTask = ReviewTask
     { rtContent :: Text
-    , rtTaskID  :: TaskID
-    , rtUserID  :: UserID
-    } deriving (Show, Generic)
-instance FromJSON ReviewTask
-instance ToJSON ReviewTask
+    , rtTaskId  :: TaskID
+    , rtUserId  :: UserID
+    } deriving (Show)
 
 data PeerReview = PeerReview
-    { prTask       :: ReviewTask
+    { prtaskId     :: TaskID
     , prComment    :: Text
     , prScore      :: Int
-    , prReviewerID :: UserID
-    , prReviewed   :: ReviewStatus
-    } deriving (Show, Generic)
-instance FromJSON PeerReview
-instance ToJSON PeerReview
+    , prReviewerId :: UserID
+    , prStatus     :: ReviewStatus
+    } deriving (Show)
+
+
+instance ToJSON ReviewStatus where
+    toJSON Waiting  = String "waiting"
+    toJSON Reviewed = String "reviewed"
+    toJSON Accepted = String "accepted"
+
+instance ToJSON PeerReview where
+    toJSON pr = object
+        [ "taskId"     .= prtaskId pr
+        , "comment"    .= prComment pr
+        , "score"      .= prScore pr
+        , "reviewerId" .= prReviewerId pr
+        , "status"     .= prStatus pr
+        ]
+
+instance FromJSON ReviewStatus where
+    parseJSON (String "waiting")  = pure Waiting
+    parseJSON (String "reviewed") = pure Reviewed
+    parseJSON (String "accepted") = pure Accepted
+    parseJSON _ = mempty
+
+instance FromJSON PeerReview where
+    parseJSON (Object v) =
+        PeerReview <$> v .: "taskId"
+                   <*> v .: "comment"
+                   <*> v .: "score"
+                   <*> v .: "reviewerId"
+                   <*> v .: "status"
+    parseJSON _ = mempty
