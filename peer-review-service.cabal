@@ -16,6 +16,7 @@ library
   exposed-modules:     PeerReview.Server
                      , PeerReview.Types
                      , PeerReview.DataSource.FPCourse
+                     , PeerReview.DBConnection
   other-modules:       PeerReview.API
                      , PeerReview.Config
                      , PeerReview.Core

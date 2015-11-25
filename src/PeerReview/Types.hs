@@ -12,11 +12,11 @@ import qualified Database.PostgreSQL.Simple.ToRow     as PG
 import           Web.Spock.Safe
 
 data DBInfo = DBInfo
-    { dbHost :: Text
+    { dbHost :: String
     , dbPort :: Int
-    , dbUser :: Text
-    , dbPass :: Text
-    , dbName :: Text
+    , dbUser :: String
+    , dbPass :: String
+    , dbName :: String
     }
 
 data AppConfig = AppConfig
@@ -29,8 +29,8 @@ data AppState = AppState
     }
 
 type SessionVal = Maybe SessionId
-type WebApp ctx = SpockCtxM ctx () SessionVal AppState ()
-type Action ctx a = SpockActionCtx ctx () SessionVal AppState a
+type WebApp ctx = SpockCtxM ctx PG.Connection SessionVal AppState ()
+type Action ctx a = SpockActionCtx ctx PG.Connection SessionVal AppState a
 
 
 -- Interface for different data sources.

@@ -9,15 +9,17 @@ import           Web.Spock.Safe
 
 import           PeerReview.API                       as API
 import           PeerReview.Config
+import           PeerReview.DBConnection
 import           PeerReview.Types
 
 -- Run the spock app using given configuration file.
 runServer :: FilePath -> Env -> IO ()
 runServer fp env = do
     conf <- readConfig fp
-    let port = acPort conf
-        state = AppState env
-        spockCfg = defaultSpockCfg Nothing PCNoDatabase state
+    let port     = acPort conf
+        state    = AppState env
+        conn     = PCConn $ mkConnBuilder $ acDB conf
+        spockCfg = defaultSpockCfg Nothing conn state
     runSpock port $ spock spockCfg service
 
 
