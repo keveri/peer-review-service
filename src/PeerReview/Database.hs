@@ -1,5 +1,6 @@
-module PeerReview.DBConnection
+module PeerReview.Database
     ( mkConnBuilder
+    , runMigrations
     ) where
 
 import qualified Database.PostgreSQL.Simple as PG
@@ -17,6 +18,13 @@ mkConnBuilder dbInfo =
                             , pc_keepOpenTime = 60
                             }
                 }
+
+runMigrations :: DBInfo -> IO ()
+runMigrations dbi = do
+    conn <- PG.connect $ mkConnInfo dbi
+    q    <- read <$> readFile "migrations/001_schema.sql"
+    _    <- PG.execute_ conn q
+    return ()
 
 
 mkConnInfo :: DBInfo -> PG.ConnectInfo
