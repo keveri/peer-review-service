@@ -2,6 +2,7 @@
 module PeerReview.Types where
 
 import           Data.Aeson
+import           Data.Pool                            (Pool)
 import           Data.Text                            (Text)
 import qualified Data.Text.Encoding                   as T
 import qualified Database.PostgreSQL.Simple           as PG
@@ -29,8 +30,8 @@ data AppState = AppState
     }
 
 type SessionVal = Maybe SessionId
-type WebApp ctx = SpockCtxM ctx PG.Connection SessionVal AppState ()
-type Action ctx a = SpockActionCtx ctx PG.Connection SessionVal AppState a
+type WebApp ctx = SpockCtxM ctx () SessionVal AppState ()
+type Action ctx a = SpockActionCtx ctx () SessionVal AppState a
 
 
 -- Interface for different data sources.
@@ -41,6 +42,7 @@ data DataSource = DataSource
 
 data Env = Env
     { eDataSource :: DataSource
+    , ePool       :: Pool PG.Connection
     }
 
 type UserID = Text

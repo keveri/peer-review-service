@@ -24,10 +24,9 @@ spec = with app $
       get "/" `shouldRespondWith` 200
 
 app = do
-    let state    = AppState $ Env Testing.dataSource
-        conn     = PCConn $ mkConnBuilder dbInfo
-        spockCfg = defaultSpockCfg Nothing conn state
-    runMigrations dbInfo
+    pool <- mkPoolAndInitDb dbInfo
+    let state    = AppState $ Env Testing.dataSource pool
+        spockCfg = defaultSpockCfg Nothing PCNoDatabase state
     spockAsApp $ spock spockCfg service
 
 dbInfo :: DBInfo
