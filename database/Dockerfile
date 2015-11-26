@@ -13,9 +13,9 @@ RUN apt-get update && apt-get install -y python-software-properties\
                                          postgresql-client-9.3\
                                          postgresql-contrib-9.3
 
+# Copy database setup.sql.
 COPY . /tmp
 WORKDIR /tmp
-#RUN pg_createcluster 9.4 main --start
 
 USER postgres
 
@@ -30,9 +30,6 @@ RUN echo "host all  all    0.0.0.0/0  md5" >> /etc/postgresql/9.3/main/pg_hba.co
 RUN echo "listen_addresses='*'" >> /etc/postgresql/9.3/main/postgresql.conf
 
 EXPOSE 5432
-
-# Add VOLUMEs to allow backup of config, logs and databases
-#VOLUME  ["/etc/postgresql", "/var/log/postgresql", "/var/lib/postgresql"]
 
 # Set the default command to run when starting the container
 CMD ["/usr/lib/postgresql/9.3/bin/postgres", "-D", "/var/lib/postgresql/9.3/main", "-c", "config_file=/etc/postgresql/9.3/main/postgresql.conf"]
