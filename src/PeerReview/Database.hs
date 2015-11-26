@@ -23,7 +23,7 @@ mkConnBuilder dbInfo =
 runMigrations :: DBInfo -> IO ()
 runMigrations dbi = do
     conn <- PG.connect $ mkConnInfo dbi
-    q    <- fromString <$> readFile "migrations/001_schema.sql"
+    q    <- fromString <$> readFile "database/schema.sql"
     _    <- PG.execute_ conn q
     return ()
 
