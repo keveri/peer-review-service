@@ -31,4 +31,4 @@ app = do
     spockAsApp $ spock spockCfg service
 
 dbInfo :: DBInfo
-dbInfo = DBInfo "localhost" 5432 "user" "passwd" "test"
+dbInfo = DBInfo "localhost" 5432 "test" "test" "peer_review_test"

@@ -5,6 +5,12 @@ cache:
   directories:
   - $HOME/.stack/
 
+addons:
+  postgresql: "9.3"
+
+services:
+  - postgresql
+
 before_install:
   # stack
   - mkdir -p ~/.local/bin
@@ -15,6 +21,10 @@ before_install:
 install:
   - stack --no-terminal setup
   - stack --no-terminal build --only-snapshot
+
+before_script:
+  - psql -c "create role test with login password 'test';" -U postgres
+  - psql -c 'create database peer_review_test owner=test;' -U postgres
 
 script:
   - stack --no-terminal test
