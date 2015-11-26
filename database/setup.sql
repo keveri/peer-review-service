@@ -1,0 +1,4 @@
+CREATE ROLE dev WITH LOGIN PASSWORD 'dev';
+CREATE ROLE test WITH LOGIN PASSWORD 'test';
+CREATE DATABASE peer_review_dev OWNER=dev;
+CREATE DATABASE peer_review_test OWNER=test;
