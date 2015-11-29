@@ -1,11 +1,15 @@
 {-# LANGUAGE OverloadedStrings #-}
 module Main where
 
+import           PeerReview.Config
+import           PeerReview.Database
 import           PeerReview.DataSource.FPCourse as FPCourse
 import           PeerReview.Server
 import           PeerReview.Types
 
 main :: IO ()
 main = do
-    let env = Env FPCourse.dataSource
-    runServer "app.cfg" env
+    conf <- readConfig "app.cfg"
+    pool <- mkPoolAndInitDb $ acDB conf
+    let env = Env FPCourse.dataSource pool
+    runServer conf env

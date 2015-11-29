@@ -4,4 +4,4 @@ set -e
 
 cd "$(dirname "$0")/.."
 
-stack build --pedantic
+stack build --pedantic --docker

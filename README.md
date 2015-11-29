@@ -5,7 +5,9 @@
 Web service for handling course peer reviews.
 
 ## Development
-This project requires `stack` tool.
+This project requires following tools:
+ - `stack`
+ - `docker` (this can be avoided by installing dependencies locally)
 
 ### Setup
 First enable scripts:

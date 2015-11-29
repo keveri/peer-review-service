@@ -6,4 +6,4 @@ cd "$(dirname "$0")/.."
 
 script/build
 
-stack exec peer-review-service-exe
+stack exec peer-review-service-exe --docker

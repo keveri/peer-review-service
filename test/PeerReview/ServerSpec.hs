@@ -10,6 +10,7 @@ import           Web.Spock.Safe                (spock)
 import           Web.Spock.Shared
 
 import           PeerReview.DataSource.Testing as Testing
+import           PeerReview.Database
 import           PeerReview.Server             (service)
 import           PeerReview.Types
 
@@ -22,7 +23,11 @@ spec = with app $
     it "responds with 200" $
       get "/" `shouldRespondWith` 200
 
-app = spockAsApp $ spock spockCfg service
-  where
-    state    = AppState $ Env Testing.dataSource
-    spockCfg = defaultSpockCfg Nothing PCNoDatabase state
+app = do
+    pool <- mkPoolAndInitDb dbInfo
+    let state    = AppState $ Env Testing.dataSource pool
+        spockCfg = defaultSpockCfg Nothing PCNoDatabase state
+    spockAsApp $ spock spockCfg service
+
+dbInfo :: DBInfo
+dbInfo = DBInfo "localhost" 5432 "test" "test" "peer_review_test"

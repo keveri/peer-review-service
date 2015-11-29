@@ -4,7 +4,7 @@ cd "$(dirname "$0")/.."
 
 stack_url="https://github.com/commercialhaskell/stack"
 
-stack setup &> /dev/null
+stack setup
 if [ $? -eq 0 ]; then
   echo "==> Stack: OK"
 else
@@ -17,3 +17,8 @@ echo "==> Creating app.cfg configuration file"
 cp app.cfg.example app.cfg
 
 echo "==> Setup done!"
+
+echo "==> You still need to setup postgres on localhost or use remote server"
+echo "==> Setup it up by yourself or use projects own Docker file:"
+echo "==> $ docker build -t peer-review-postgres database"
+echo "==> $ script/run_db"
