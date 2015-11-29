@@ -20,6 +20,7 @@ library
                      , PeerReview.Config
   other-modules:       PeerReview.API
                      , PeerReview.Core
+                     , PeerReview.Transaction
   build-depends:       base >= 4.7 && < 5
                      , configurator >= 0.3
                      , wai-extra >= 3.0

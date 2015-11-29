@@ -18,7 +18,7 @@ import           PeerReview.Types
 new :: Action ctx a
 new = do
     email <- param' "email"
-    e <- fmap asEnv getState
+    e <- asEnv <$> getState
     json =<< liftIO (findTaskToReview e email)
 
 -- Create peer reviews.
@@ -31,7 +31,8 @@ review = do
 list :: Action ctx a
 list = do
     email <- param' "email"
-    json =<< liftIO (listReviewsForUser email)
+    e <- asEnv <$> getState
+    json =<< liftIO (listReviewsForUser e email)
 
 -- List completed reviews.
 completed :: Action ctx a
