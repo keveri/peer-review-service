@@ -25,7 +25,7 @@ saveReview pool pr = withResource pool (\ conn ->
 findReviewsByUserId :: Pool Connection -> UserID -> IO [PeerReview]
 findReviewsByUserId pool uid = withResource pool (\ conn ->
     query conn [sql|
-        SELECT *
+        SELECT task_id, comment, score, reviewer_id, status
         FROM peer_reviews
         WHERE reviewer_id = ?
     |] $ Only uid)

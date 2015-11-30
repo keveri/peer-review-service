@@ -102,18 +102,18 @@ instance PG.FromField ReviewStatus where
     fromField f Nothing  = PG.returnError PG.UnexpectedNull f ""
     fromField _ (Just b) =
         case T.decodeUtf8 b of
-              "WAITING"  -> return Waiting
-              "REVIEWED" -> return Reviewed
-              "ACCEPTED" -> return Accepted
+              "waiting"  -> return Waiting
+              "reviewed" -> return Reviewed
+              "accepted" -> return Accepted
               _          -> error "invalid status"
 
 instance PG.FromRow ReviewStatus where
     fromRow = PG.field
 
 instance PG.ToField ReviewStatus where
-    toField Waiting  = PG.toField ("WAITING"  :: Text)
-    toField Reviewed = PG.toField ("REVIEWED" :: Text)
-    toField Accepted = PG.toField ("ACCEPTED" :: Text)
+    toField Waiting  = PG.toField ("waiting"  :: Text)
+    toField Reviewed = PG.toField ("reviewed" :: Text)
+    toField Accepted = PG.toField ("accepted" :: Text)
 
 instance PG.ToRow PeerReview where
     toRow (PeerReview taskId comment score reviewerId status) =
