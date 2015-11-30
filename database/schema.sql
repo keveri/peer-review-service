@@ -16,5 +16,6 @@ CREATE TABLE IF NOT EXISTS peer_reviews (
   comment     text,
   score       int,
   reviewer_id text        NOT NULL,
-  status      status      NOT NULL DEFAULT 'waiting'
+  status      status      NOT NULL DEFAULT 'waiting',
+  created_at  timestamptz NOT NULL DEFAULT now()
 );
