@@ -2,6 +2,7 @@
 module PeerReview.Types where
 
 import           Data.Aeson
+import           Data.Map                             (Map)
 import           Data.Pool                            (Pool)
 import           Data.Text                            (Text)
 import qualified Data.Text.Encoding                   as T
@@ -34,14 +35,17 @@ type WebApp ctx = SpockCtxM ctx () SessionVal AppState ()
 type Action ctx a = SpockActionCtx ctx () SessionVal AppState a
 
 
--- Interface for different data sources.
-data DataSource = DataSource
-    { findTask         :: TaskID -> IO ReviewTask
-    , findTasksForUser :: UserID -> IO [ReviewTask]
+type TaskSourceConfig = Map Text Text
+
+-- Interface for different task sources.
+data TaskSource = TaskSource
+    { tsFindById    :: TaskID -> IO Task
+    , tsFindForUser :: UserID -> IO [Task]
+    , tsAll         :: IO [Task]
     }
 
 data Env = Env
-    { eDataSource :: DataSource
+    { eTaskSource :: TaskSource
     , ePool       :: Pool PG.Connection
     }
 
@@ -53,11 +57,11 @@ data ReviewStatus = Waiting
                   | Accepted
                   deriving (Show)
 
-data ReviewTask = ReviewTask
-    { rtContent :: Text
-    , rtTaskId  :: TaskID
-    , rtUserId  :: UserID
-    } deriving (Show)
+data Task = Task
+    { tId      :: TaskID
+    , tUserId  :: UserID
+    , tContent :: Maybe Text
+    }
 
 data PeerReview = PeerReview
     { prtaskId     :: TaskID

@@ -1,20 +1,26 @@
 {-# LANGUAGE OverloadedStrings #-}
 module PeerReview.Config
-    ( readConfig
+    ( readAppConfig
+    , readTaskSourceConfig
     ) where
 
 import qualified Data.Configurator       as C
 import           Data.Configurator.Types
+import qualified Data.Map                as M (empty)
 
 import           PeerReview.Types
 
 -- Read config file.
-readConfig :: FilePath -> IO AppConfig
-readConfig cfgFile = do
+readAppConfig :: FilePath -> IO AppConfig
+readAppConfig cfgFile = do
     cfg      <- C.load [C.Required cfgFile]
     port     <- C.require cfg "port"
     database <- parseDB cfg
     return $ AppConfig port database
+
+-- TODO: Implement config file reading.
+readTaskSourceConfig :: FilePath -> IO TaskSourceConfig
+readTaskSourceConfig _ = return M.empty
 
 
 -- Parse database related information.

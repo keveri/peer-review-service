@@ -15,7 +15,7 @@ library
   hs-source-dirs:      src
   exposed-modules:     PeerReview.Server
                      , PeerReview.Types
-                     , PeerReview.DataSource.FPCourse
+                     , PeerReview.TaskSource.FPCourse
                      , PeerReview.Database
                      , PeerReview.Config
   other-modules:       PeerReview.API
@@ -23,6 +23,7 @@ library
                      , PeerReview.Transaction
   build-depends:       base >= 4.7 && < 5
                      , configurator >= 0.3
+                     , containers >= 0.5
                      , wai-extra >= 3.0
                      , Spock >= 0.10
                      , postgresql-simple >= 0.4
