@@ -11,6 +11,6 @@ main :: IO ()
 main = do
     appConf    <- readAppConfig "app.cfg"
     pool       <- mkPoolAndInitDb $ acDB appConf
-    taskSource <- FPCourse.taskSource <$> readTaskSourceConfig ""
+    taskSource <- FPCourse.taskSource <$> readTaskSourceConfig "task_source.json"
     let env = Env taskSource pool
     runServer appConf env

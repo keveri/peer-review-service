@@ -4,9 +4,10 @@ module PeerReview.Config
     , readTaskSourceConfig
     ) where
 
+import           Data.Aeson              (decode)
+import qualified Data.ByteString.Lazy    as LB
 import qualified Data.Configurator       as C
 import           Data.Configurator.Types
-import qualified Data.Map                as M (empty)
 
 import           PeerReview.Types
 
@@ -18,9 +19,13 @@ readAppConfig cfgFile = do
     database <- parseDB cfg
     return $ AppConfig port database
 
--- TODO: Implement config file reading.
+-- Read config as JSON for now.
+-- Format: { "key": "value" }
 readTaskSourceConfig :: FilePath -> IO TaskSourceConfig
-readTaskSourceConfig _ = return M.empty
+readTaskSourceConfig fp = do
+    let errorMsg = "Couldn't parse task source config."
+    mObj <- decode <$> LB.readFile fp
+    maybe (fail errorMsg) return mObj
 
 
 -- Parse database related information.

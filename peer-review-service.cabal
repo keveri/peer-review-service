@@ -22,6 +22,7 @@ library
                      , PeerReview.Core
                      , PeerReview.Transaction
   build-depends:       base >= 4.7 && < 5
+                     , bytestring >= 0.10
                      , configurator >= 0.3
                      , containers >= 0.5
                      , wai-extra >= 3.0
