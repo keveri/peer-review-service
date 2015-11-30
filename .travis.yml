@@ -20,7 +20,8 @@ before_install:
 
 install:
   - stack --no-terminal setup
-  - stack --no-terminal build --only-snapshot
+  - stack --no-terminal build --pedantic --only-snapshot
+  - stack install hlint
 
 before_script:
   - psql -c "create role test with login password 'test';" -U postgres
@@ -28,3 +29,4 @@ before_script:
 
 script:
   - stack --no-terminal test
+  - hlint .
