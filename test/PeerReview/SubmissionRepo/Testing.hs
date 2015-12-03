@@ -6,14 +6,17 @@ module PeerReview.SubmissionRepo.Testing
 import           PeerReview.Types
 
 repo :: SubmissionRepo
-repo = SubmissionRepo findById findForUser getAll
+repo = SubmissionRepo byId forTask forUser getAll
 
 
-findById :: TaskID -> IO Submission
-findById _ = return $ Submission "1" "2" "3" (Just "wat")
+byId :: SubmissionID -> IO Submission
+byId _ = return $ Submission "1" "2" "3" (Just "wat")
 
-findForUser :: UserID -> IO [Submission]
-findForUser _ = return []
+forTask :: TaskID -> IO [Submission]
+forTask _ = return []
+
+forUser :: UserID -> IO [Submission]
+forUser _ = return []
 
 getAll :: IO [Submission]
 getAll = return []

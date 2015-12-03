@@ -39,9 +39,10 @@ type SubmissionRepoConfig = Map Text Text
 
 -- Interface for different submission repos.
 data SubmissionRepo = SubmissionRepo
-    { tsFindById    :: TaskID -> IO Submission
-    , tsFindForUser :: UserID -> IO [Submission]
-    , tsAll         :: IO [Submission]
+    { srFindById     :: SubmissionID -> IO Submission
+    , srFindByTaskId :: TaskID -> IO [Submission]
+    , srFindByUserId :: UserID -> IO [Submission]
+    , srAll          :: IO [Submission]
     }
 
 data Env = Env
