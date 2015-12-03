@@ -6,12 +6,12 @@ module PeerReview.ServerSpec
 
 import           Test.Hspec
 import           Test.Hspec.Wai
-import           Web.Spock.Safe                (spock)
+import           Web.Spock.Safe                    (spock)
 import           Web.Spock.Shared
 
 import           PeerReview.Database
-import           PeerReview.Server             (service)
-import           PeerReview.TaskSource.Testing as Testing
+import           PeerReview.Server                 (service)
+import           PeerReview.SubmissionRepo.Testing as Testing
 import           PeerReview.Types
 
 main :: IO ()
@@ -25,7 +25,7 @@ spec = with app $
 
 app = do
     pool <- mkPoolAndInitDb dbInfo
-    let state    = AppState $ Env Testing.taskSource pool
+    let state    = AppState $ Env Testing.repo pool
         spockCfg = defaultSpockCfg Nothing PCNoDatabase state
     spockAsApp $ spock spockCfg service
 

@@ -1,7 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 module PeerReview.Config
     ( readAppConfig
-    , readTaskSourceConfig
+    , readSubmissionRepoConfig
     ) where
 
 import           Data.Aeson              (decode)
@@ -21,9 +21,9 @@ readAppConfig cfgFile = do
 
 -- Read config as JSON for now.
 -- Format: { "key": "value" }
-readTaskSourceConfig :: FilePath -> IO TaskSourceConfig
-readTaskSourceConfig fp = do
-    let errorMsg = "Couldn't parse task source config."
+readSubmissionRepoConfig :: FilePath -> IO SubmissionRepoConfig
+readSubmissionRepoConfig fp = do
+    let errorMsg = "Couldn't parse submission repo config."
     mObj <- decode <$> LB.readFile fp
     maybe (fail errorMsg) return mObj
 

@@ -35,40 +35,44 @@ type WebApp ctx = SpockCtxM ctx () SessionVal AppState ()
 type Action ctx a = SpockActionCtx ctx () SessionVal AppState a
 
 
-type TaskSourceConfig = Map Text Text
+type SubmissionRepoConfig = Map Text Text
 
--- Interface for different task sources.
-data TaskSource = TaskSource
-    { tsFindById    :: TaskID -> IO Task
-    , tsFindForUser :: UserID -> IO [Task]
-    , tsAll         :: IO [Task]
+-- Interface for different submission repos.
+data SubmissionRepo = SubmissionRepo
+    { srFindById     :: SubmissionID -> IO Submission
+    , srFindByTaskId :: TaskID -> IO [Submission]
+    , srFindByUserId :: UserID -> IO [Submission]
+    , srAll          :: IO [Submission]
     }
 
 data Env = Env
-    { eTaskSource :: TaskSource
-    , ePool       :: Pool PG.Connection
+    { eSubmissionRepo :: SubmissionRepo
+    , ePool           :: Pool PG.Connection
     }
 
 type UserID = Text
 type TaskID = Text
+type SubmissionID = Text
+type Content = Text
 
 data ReviewStatus = Waiting
                   | Reviewed
                   | Accepted
                   deriving (Show)
 
-data Task = Task
-    { tId      :: TaskID
-    , tUserId  :: UserID
-    , tContent :: Maybe Text
+data Submission = Submission
+    { sId      :: SubmissionID
+    , sUid     :: UserID
+    , sTid     :: TaskID
+    , sContent :: Maybe Content
     }
 
 data PeerReview = PeerReview
-    { prtaskId     :: TaskID
-    , prComment    :: Text
-    , prScore      :: Int
-    , prReviewerId :: UserID
-    , prStatus     :: ReviewStatus
+    { prSubmissionId :: SubmissionID
+    , prComment      :: Text
+    , prScore        :: Int
+    , prReviewerId   :: UserID
+    , prStatus       :: ReviewStatus
     } deriving (Show)
 
 
@@ -79,11 +83,11 @@ instance ToJSON ReviewStatus where
 
 instance ToJSON PeerReview where
     toJSON pr = object
-        [ "taskId"     .= prtaskId pr
-        , "comment"    .= prComment pr
-        , "score"      .= prScore pr
-        , "reviewerId" .= prReviewerId pr
-        , "status"     .= prStatus pr
+        [ "submissionId" .= prSubmissionId pr
+        , "comment"      .= prComment pr
+        , "score"        .= prScore pr
+        , "reviewerId"   .= prReviewerId pr
+        , "status"       .= prStatus pr
         ]
 
 instance FromJSON ReviewStatus where
@@ -94,7 +98,7 @@ instance FromJSON ReviewStatus where
 
 instance FromJSON PeerReview where
     parseJSON (Object v) =
-        PeerReview <$> v .: "taskId"
+        PeerReview <$> v .: "submissionId"
                    <*> v .: "comment"
                    <*> v .: "score"
                    <*> v .: "reviewerId"
@@ -120,8 +124,8 @@ instance PG.ToField ReviewStatus where
     toField Accepted = PG.toField ("accepted" :: Text)
 
 instance PG.ToRow PeerReview where
-    toRow (PeerReview taskId comment score reviewerId status) =
-        PG.toRow (taskId, comment, score, reviewerId, status)
+    toRow (PeerReview submissionId comment score reviewerId status) =
+        PG.toRow (submissionId, comment, score, reviewerId, status)
 
 instance PG.FromRow PeerReview where
     fromRow =
