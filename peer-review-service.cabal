@@ -15,7 +15,7 @@ library
   hs-source-dirs:      src
   exposed-modules:     PeerReview.Server
                      , PeerReview.Types
-                     , PeerReview.TaskSource.FPCourse
+                     , PeerReview.SubmissionRepo.FPCourse
                      , PeerReview.Database
                      , PeerReview.Config
   other-modules:       PeerReview.API
