@@ -45,8 +45,8 @@ data SubmissionRepo = SubmissionRepo
     }
 
 data Env = Env
-    { eTaskRepo :: SubmissionRepo
-    , ePool     :: Pool PG.Connection
+    { eSubmissionRepo :: SubmissionRepo
+    , ePool           :: Pool PG.Connection
     }
 
 type UserID = Text
