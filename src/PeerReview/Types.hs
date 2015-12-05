@@ -35,6 +35,17 @@ type WebApp ctx = SpockCtxM ctx () SessionVal AppState ()
 type Action ctx a = SpockActionCtx ctx () SessionVal AppState a
 
 
+data ErrorMessage = ErrorMessage
+    { emMessage  :: Text
+    , emCode     :: Int
+    }
+
+instance ToJSON ErrorMessage where
+    toJSON em = object
+        [ "message" .= emMessage em
+        , "code"    .= emCode em
+        ]
+
 type SubmissionRepoConfig = Map Text Text
 
 -- Interface for different submission repos.

@@ -51,6 +51,7 @@ test-suite peer-review-service-test
   main-is:             Spec.hs
   build-depends:       base
                      , peer-review-service
+                     , aeson
                      , hspec
                      , hspec-wai
                      , Spock

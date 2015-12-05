@@ -13,17 +13,16 @@ import           PeerReview.Types
 import           PeerReview.Util
 
 -- Find reviewable task for given user.
--- TODO: Use Either on return type to handle error cases.
-findTaskToReview :: Env -> UserID -> IO PeerReview
+findTaskToReview :: Env -> UserID -> IO (Either ErrorMessage PeerReview)
 findTaskToReview env uid = do
     mSubmission <- findSubmissionToReview env uid
-    let err   = PeerReview "1" "1" "error" 1 uid Waiting
+    let err     = ErrorMessage "No submissions to review." 1
         mReview = reviewFromSub uid <$> mSubmission
     case mReview of
-        Nothing -> return err
+        Nothing -> return $ Left err
         Just r  -> do
             saveReview (ePool env) r
-            return r
+            return $ Right r
 
 -- List all reviews done by given user.
 listReviewsForUser :: Env -> UserID -> IO [PeerReview]

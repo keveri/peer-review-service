@@ -19,7 +19,8 @@ new :: Action ctx a
 new = do
     email <- param' "email"
     e <- asEnv <$> getState
-    json =<< liftIO (findTaskToReview e email)
+    eReview <- liftIO (findTaskToReview e email)
+    either json json eReview
 
 -- Create peer reviews.
 review :: Action ctx a
