@@ -7,17 +7,23 @@ module PeerReview.Core
     , completedReviews
     ) where
 
+import           PeerReview.ReviewFinder
 import           PeerReview.Transaction
 import           PeerReview.Types
+import           PeerReview.Util
 
 -- Find reviewable task for given user.
--- TODO: Correct implementation. This is just for seeing how db queries could
--- be used.
+-- TODO: Use Either on return type to handle error cases.
 findTaskToReview :: Env -> UserID -> IO PeerReview
 findTaskToReview env uid = do
-    let review = PeerReview "1" "wat" 1 uid Waiting
-    saveReview (ePool env) review
-    return review
+    mSubmission <- findSubmissionToReview env uid
+    let err   = PeerReview "1" "1" "error" 1 uid Waiting
+        mReview = reviewFromSub uid <$> mSubmission
+    case mReview of
+        Nothing -> return err
+        Just r  -> do
+            saveReview (ePool env) r
+            return r
 
 -- List all reviews done by given user.
 listReviewsForUser :: Env -> UserID -> IO [PeerReview]

@@ -20,7 +20,9 @@ library
                      , PeerReview.Config
   other-modules:       PeerReview.API
                      , PeerReview.Core
+                     , PeerReview.ReviewFinder
                      , PeerReview.Transaction
+                     , PeerReview.Util
   build-depends:       base >= 4.7 && < 5
                      , bytestring >= 0.10
                      , configurator >= 0.3
