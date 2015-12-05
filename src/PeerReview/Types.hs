@@ -69,6 +69,7 @@ data Submission = Submission
 
 data PeerReview = PeerReview
     { prSubmissionId :: SubmissionID
+    , prTaskId       :: TaskID
     , prComment      :: Text
     , prScore        :: Int
     , prReviewerId   :: UserID
@@ -99,6 +100,7 @@ instance FromJSON ReviewStatus where
 instance FromJSON PeerReview where
     parseJSON (Object v) =
         PeerReview <$> v .: "submissionId"
+                   <*> v .: "taskId"
                    <*> v .: "comment"
                    <*> v .: "score"
                    <*> v .: "reviewerId"
@@ -124,12 +126,13 @@ instance PG.ToField ReviewStatus where
     toField Accepted = PG.toField ("accepted" :: Text)
 
 instance PG.ToRow PeerReview where
-    toRow (PeerReview submissionId comment score reviewerId status) =
-        PG.toRow (submissionId, comment, score, reviewerId, status)
+    toRow (PeerReview subId tId comment score reviewerId status) =
+        PG.toRow (subId, tId, comment, score, reviewerId, status)
 
 instance PG.FromRow PeerReview where
     fromRow =
         PeerReview <$> PG.field
+                   <*> PG.field
                    <*> PG.field
                    <*> PG.field
                    <*> PG.field
