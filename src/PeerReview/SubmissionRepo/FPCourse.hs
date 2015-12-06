@@ -1,6 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 module PeerReview.SubmissionRepo.FPCourse
     ( repo
+    , repoTest
     ) where
 
 import           PeerReview.Types
@@ -9,12 +10,18 @@ import           Data.Vector                     as V
 import           Data.Map                        as M
 import           Data.Text
 import           Control.Monad
-import           PeerReview.SubmissionRepo.FPCourseAPIClient
+import qualified PeerReview.SubmissionRepo.FPCourseAPIClient as FPCourseAPIClient
 
 -- Create submission repo using endpoint configuration.
 -- Config is a map containing required endpoints for fetching data.
-repo :: APIClient -> SubmissionRepoConfig -> SubmissionRepo
-repo client cfg =
+repo :: SubmissionRepoConfig -> SubmissionRepo
+repo cfg =
+    let client = FPCourseAPIClient.client
+    in SubmissionRepo (byId cfg client) (forTask cfg client) (forUser cfg client) (listAll cfg client)
+
+-- For testing purposes
+repoTest :: APIClient -> SubmissionRepoConfig -> SubmissionRepo
+repoTest client cfg =
     SubmissionRepo (byId cfg client) (forTask cfg client) (forUser cfg client) (listAll cfg client)
 
 byId :: SubmissionRepoConfig -> APIClient ->SubmissionID -> IO Submission
