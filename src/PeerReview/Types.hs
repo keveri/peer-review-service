@@ -82,7 +82,7 @@ data Submission = Submission
     , sUid     :: UserID
     , sTid     :: TaskID
     , sContent :: Maybe Content
-    }
+    } deriving (Show)
 
 data PeerReview = PeerReview
     { prSubmissionId :: SubmissionID
