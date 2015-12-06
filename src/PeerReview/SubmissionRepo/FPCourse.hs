@@ -1,7 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 module PeerReview.SubmissionRepo.FPCourse
     ( repo
-    , repoTest
+    , repoWithClient
     ) where
 
 import           PeerReview.Types
@@ -17,11 +17,11 @@ import qualified PeerReview.SubmissionRepo.FPCourseAPIClient as FPCourseAPIClien
 repo :: SubmissionRepoConfig -> SubmissionRepo
 repo cfg =
     let client = FPCourseAPIClient.client
-    in SubmissionRepo (byId cfg client) (forTask cfg client) (forUser cfg client) (listAll cfg client)
+    in repoWithClient client cfg
 
 -- For testing purposes
-repoTest :: APIClient -> SubmissionRepoConfig -> SubmissionRepo
-repoTest client cfg =
+repoWithClient :: APIClient -> SubmissionRepoConfig -> SubmissionRepo
+repoWithClient client cfg =
     SubmissionRepo (byId cfg client) (forTask cfg client) (forUser cfg client) (listAll cfg client)
 
 byId :: SubmissionRepoConfig -> APIClient ->SubmissionID -> IO Submission
