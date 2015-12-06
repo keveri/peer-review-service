@@ -11,6 +11,7 @@ import           Data.Map                        as M
 import           Network.Wreq
 import           Data.ByteString.Lazy.Internal
 import           Data.Text
+import           Control.Monad
 
 -- Create submission repo using endpoint configuration.
 -- Config is a map containing required endpoints for fetching data.
@@ -21,7 +22,12 @@ byId :: SubmissionRepoConfig -> SubmissionID -> IO Submission
 byId _ _ = return $ Submission "1" "2" "3" (Just "wat")
 
 forTask :: SubmissionRepoConfig -> TaskID -> IO [Submission]
-forTask _ _ = return []
+forTask cfg taskId = do
+    allSubmissions <- getAllSubmissions . unpack $ cfg M.! pack "listAllUrl"
+    let subsForTask = liftM (V.filter (\s -> sTid s == taskId)) allSubmissions
+    case subsForTask of
+        Just submissions -> return $ V.toList submissions
+        _                -> return []
 
 forUser :: SubmissionRepoConfig -> UserID -> IO [Submission]
 forUser _ _ = return []
