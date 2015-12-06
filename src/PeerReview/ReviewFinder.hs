@@ -7,15 +7,14 @@ module PeerReview.ReviewFinder
 import           Data.List              (find)
 import qualified Data.Set               as Set
 
-import           PeerReview.Transaction
 import           PeerReview.Types
 
 
 -- A simple version of a function choosing next submnission to review.
 findSubmissionToReview :: Env -> UserID -> IO (Maybe Submission)
-findSubmissionToReview (Env sr pool) uid = do
+findSubmissionToReview (Env sr rr) uid = do
     userSubs    <- srFindByUserId sr uid
-    userReviews <- findReviewsByUserId pool uid
+    userReviews <- rrFindByUserId rr uid
     allSubs     <- srAll sr
     return $ pickOne allSubs $ candidates userSubs userReviews
 

@@ -16,12 +16,12 @@ library
   exposed-modules:     PeerReview.Server
                      , PeerReview.Types
                      , PeerReview.SubmissionRepo.FPCourse
-                     , PeerReview.Database
+                     , PeerReview.ReviewRepo.Postgres
                      , PeerReview.Config
   other-modules:       PeerReview.API
                      , PeerReview.Core
                      , PeerReview.ReviewFinder
-                     , PeerReview.Transaction
+                     , PeerReview.ReviewRepo.Transaction
                      , PeerReview.Util
   build-depends:       base >= 4.7 && < 5
                      , bytestring >= 0.10

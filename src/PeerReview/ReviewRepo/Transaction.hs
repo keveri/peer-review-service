@@ -1,6 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE QuasiQuotes       #-}
-module PeerReview.Transaction
+module PeerReview.ReviewRepo.Transaction
     ( saveReview
     , findReviewsByUserId
     ) where

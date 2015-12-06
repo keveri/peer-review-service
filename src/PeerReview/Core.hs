@@ -8,7 +8,6 @@ module PeerReview.Core
     ) where
 
 import           PeerReview.ReviewFinder
-import           PeerReview.Transaction
 import           PeerReview.Types
 import           PeerReview.Util
 
@@ -21,12 +20,12 @@ findTaskToReview env uid = do
     case mReview of
         Nothing -> return $ Left err
         Just r  -> do
-            saveReview (ePool env) r
+            rrSave (eReviewRepo env) r
             return $ Right r
 
 -- List all reviews done by given user.
 listReviewsForUser :: Env -> UserID -> IO [PeerReview]
-listReviewsForUser = findReviewsByUserId . ePool
+listReviewsForUser = rrFindByUserId . eReviewRepo
 
 -- Create new PeerReview.
 createReview :: PeerReview -> IO PeerReview

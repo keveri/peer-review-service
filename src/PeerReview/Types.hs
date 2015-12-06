@@ -3,7 +3,6 @@ module PeerReview.Types where
 
 import           Data.Aeson
 import           Data.Map                             (Map)
-import           Data.Pool                            (Pool)
 import           Data.Text                            (Text)
 import qualified Data.Text.Encoding                   as T
 import qualified Database.PostgreSQL.Simple           as PG
@@ -56,9 +55,15 @@ data SubmissionRepo = SubmissionRepo
     , srAll          :: IO [Submission]
     }
 
+-- Interface for peer review repos.
+data ReviewRepo = ReviewRepo
+    { rrSave         :: PeerReview -> IO ()
+    , rrFindByUserId :: UserID -> IO [PeerReview]
+    }
+
 data Env = Env
     { eSubmissionRepo :: SubmissionRepo
-    , ePool           :: Pool PG.Connection
+    , eReviewRepo     :: ReviewRepo
     }
 
 type UserID = Text

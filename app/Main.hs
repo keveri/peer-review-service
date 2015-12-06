@@ -2,7 +2,7 @@
 module Main where
 
 import           PeerReview.Config
-import           PeerReview.Database
+import           PeerReview.ReviewRepo.Postgres     as Postgres
 import           PeerReview.Server
 import qualified PeerReview.SubmissionRepo.FPCourse as FPCourse
 import           PeerReview.Types
@@ -10,7 +10,7 @@ import           PeerReview.Types
 main :: IO ()
 main = do
     appConf <- readAppConfig "app.cfg"
-    pool    <- mkPoolAndInitDb $ acDB appConf
-    repo    <- FPCourse.repo <$> readSubmissionRepoConfig "submission_repo.json"
-    let env = Env repo pool
+    rRepo   <- Postgres.repo $ acDB appConf
+    sRepo   <- FPCourse.repo <$> readSubmissionRepoConfig "submission_repo.json"
+    let env = Env sRepo rRepo
     runServer appConf env
