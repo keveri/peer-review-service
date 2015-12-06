@@ -1,14 +1,22 @@
-module PeerReview.Database
-    ( mkPoolAndInitDb
+module PeerReview.ReviewRepo.Postgres
+    ( repo
     ) where
 
 import           Control.Monad              (void)
 import           Data.Pool                  (Pool, createPool, withResource)
 import           Data.String                (fromString)
-import           Database.PostgreSQL.Simple (ConnectInfo(..), Connection,
-                                             connect, execute_, close)
+import           Database.PostgreSQL.Simple (ConnectInfo (..), Connection,
+                                             close, connect, execute_)
 
+import           PeerReview.ReviewRepo.Transaction
 import           PeerReview.Types
+
+-- TODO: comments to the file
+repo :: DBInfo -> IO ReviewRepo
+repo dbi = do
+    pool <- mkPoolAndInitDb dbi
+    return $ ReviewRepo (saveReview pool) (findReviewsByUserId pool)
+
 
 schemaFile :: FilePath
 schemaFile = "database/schema.sql"

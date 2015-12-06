@@ -10,7 +10,7 @@ import           Test.Hspec.Wai
 import           Web.Spock.Safe                    (spock)
 import           Web.Spock.Shared
 
-import           PeerReview.Database
+import           PeerReview.ReviewRepo.Postgres    as Postgres
 import           PeerReview.Server                 (service)
 import           PeerReview.SubmissionRepo.Testing as Testing
 import           PeerReview.Types
@@ -29,8 +29,8 @@ spec = with app $ do
       get "/peer-reviews/new?email=test" `shouldRespondWith` jsonError
 
 app = do
-    pool <- mkPoolAndInitDb dbInfo
-    let state    = AppState $ Env Testing.repo pool
+    rRepo <- Postgres.repo dbInfo
+    let state    = AppState $ Env Testing.repo rRepo
         spockCfg = defaultSpockCfg Nothing PCNoDatabase state
     spockAsApp $ spock spockCfg service
 
