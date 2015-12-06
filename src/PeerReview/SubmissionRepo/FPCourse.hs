@@ -42,15 +42,15 @@ listAll cfg = do
 getAllSubmissions :: String -> IO (Maybe (Vector Submission))
 getAllSubmissions url = do
     jsonResp <- getJSONResource url
-    let fpExercises = decode jsonResp :: Maybe (Vector (Vector String))
+    let fpExercises = decode jsonResp :: Maybe (Vector (Vector Text))
         submissions = fmap exToSubmission <$> fpExercises
     return submissions
 
 -- submission json structure:
 -- [email, exName, submissionID]
-exToSubmission :: Vector String -> Submission
+exToSubmission :: Vector Text -> Submission
 exToSubmission v =
-    Submission (pack (v V.! 2)) (pack (v V.! 0)) (pack (v V.! 1)) Nothing
+    Submission (v V.! 2) (v V.! 0) (v V.! 1) Nothing
 
 getJSONResource :: String -> IO ByteString
 getJSONResource url = do
