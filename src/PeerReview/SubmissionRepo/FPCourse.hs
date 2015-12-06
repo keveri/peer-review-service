@@ -30,7 +30,7 @@ byId _ _ _ = return $ Submission "1" "2" "3" (Just "wat")
 forTask :: SubmissionRepoConfig -> APIClient -> TaskID -> IO [Submission]
 forTask cfg client taskId = do
     allSubmissions <- getAllSubmissions cfg client
-    let subsForTask = liftM (V.filter (\s -> sTid s == taskId)) allSubmissions
+    let subsForTask = fmap (V.filter (\s -> sTid s == taskId)) allSubmissions
     case subsForTask of
         Just submissions -> return $ V.toList submissions
         _                -> return []
