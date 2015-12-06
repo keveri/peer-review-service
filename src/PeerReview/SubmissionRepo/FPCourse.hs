@@ -47,7 +47,7 @@ listAll cfg client = do
 
 getAllSubmissions :: SubmissionRepoConfig -> APIClient -> IO (Maybe (Vector Submission))
 getAllSubmissions cfg client = do
-    jsonResp <- acGetResource client $ unpack (cfg M.! (pack "listAllUrl"))
+    jsonResp <- acGetResource client $ unpack (cfg M.! pack "listAllUrl")
     let fpExercises = decode jsonResp :: Maybe (Vector (Vector Text))
         submissions = fmap exToSubmission <$> fpExercises
     return submissions
