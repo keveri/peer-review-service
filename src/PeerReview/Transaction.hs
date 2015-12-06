@@ -17,15 +17,15 @@ import           PeerReview.Types
 saveReview :: Pool Connection -> PeerReview -> IO ()
 saveReview pool pr = withResource pool (\ conn ->
     void $ execute conn [sql|
-        INSERT INTO peer_reviews (task_id,comment,score,reviewer_id,status)
-        VALUES (?,?,?,?,?)
+        INSERT INTO peer_reviews (submission_id, task_id,comment,score,reviewer_id,status)
+        VALUES (?,?,?,?,?,?)
     |] pr)
 
 -- Find all reviews for given User ID.
 findReviewsByUserId :: Pool Connection -> UserID -> IO [PeerReview]
 findReviewsByUserId pool uid = withResource pool (\ conn ->
     query conn [sql|
-        SELECT task_id, comment, score, reviewer_id, status
+        SELECT submission_id, task_id, comment, score, reviewer_id, status
         FROM peer_reviews
         WHERE reviewer_id = ?
     |] $ Only uid)

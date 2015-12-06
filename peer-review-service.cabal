@@ -20,7 +20,9 @@ library
                      , PeerReview.Config
   other-modules:       PeerReview.API
                      , PeerReview.Core
+                     , PeerReview.ReviewFinder
                      , PeerReview.Transaction
+                     , PeerReview.Util
   build-depends:       base >= 4.7 && < 5
                      , bytestring >= 0.10
                      , configurator >= 0.3
@@ -49,6 +51,7 @@ test-suite peer-review-service-test
   main-is:             Spec.hs
   build-depends:       base
                      , peer-review-service
+                     , aeson
                      , hspec
                      , hspec-wai
                      , Spock

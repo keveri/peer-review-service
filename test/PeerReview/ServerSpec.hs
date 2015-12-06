@@ -4,6 +4,7 @@ module PeerReview.ServerSpec
     , spec
     ) where
 
+import           Data.Aeson
 import           Test.Hspec
 import           Test.Hspec.Wai
 import           Web.Spock.Safe                    (spock)
@@ -18,10 +19,14 @@ main :: IO ()
 main = hspec spec
 
 spec :: Spec
-spec = with app $
+spec = with app $ do
   describe "GET /" $
     it "responds with 200" $
       get "/" `shouldRespondWith` 200
+  describe "GET new review" $
+    it "responds with error when no submission can be reviewed" $ do
+      let jsonError = "{\"code\":1,\"message\":\"No submissions to review.\"}"
+      get "/peer-reviews/new?email=test" `shouldRespondWith` jsonError
 
 app = do
     pool <- mkPoolAndInitDb dbInfo
