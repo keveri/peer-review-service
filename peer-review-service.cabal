@@ -58,6 +58,7 @@ test-suite peer-review-service-test
                      , PeerReview.SubmissionRepo.Testing
                      , PeerReview.UtilSpec
   build-depends:       base
+                     , bytestring >= 0.10
                      , peer-review-service
                      , aeson
                      , hspec
