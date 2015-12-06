@@ -5,13 +5,11 @@ module PeerReview.SubmissionRepo.FPCourse
 
 import           PeerReview.Types
 import           Data.Aeson
-import           Control.Lens
 import           Data.Vector                     as V
 import           Data.Map                        as M
-import           Network.Wreq
-import           Data.ByteString.Lazy.Internal
 import           Data.Text
 import           Control.Monad
+import           PeerReview.SubmissionRepo.FPCourseAPIClient
 
 -- Create submission repo using endpoint configuration.
 -- Config is a map containing required endpoints for fetching data.
@@ -51,9 +49,3 @@ getAllSubmissions url = do
 exToSubmission :: Vector Text -> Submission
 exToSubmission v =
     Submission (v V.! 2) (v V.! 0) (v V.! 1) Nothing
-
-getJSONResource :: String -> IO ByteString
-getJSONResource url = do
-    r <- get url
-    let [body] = r ^.. responseBody
-    return body
