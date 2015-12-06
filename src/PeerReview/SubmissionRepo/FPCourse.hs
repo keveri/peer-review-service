@@ -13,33 +13,34 @@ import           PeerReview.SubmissionRepo.FPCourseAPIClient
 
 -- Create submission repo using endpoint configuration.
 -- Config is a map containing required endpoints for fetching data.
-repo :: SubmissionRepoConfig -> SubmissionRepo
-repo cfg = SubmissionRepo (byId cfg) (forTask cfg) (forUser cfg) (listAll cfg)
+repo :: APIClient -> SubmissionRepoConfig -> SubmissionRepo
+repo client cfg =
+    SubmissionRepo (byId cfg client) (forTask cfg client) (forUser cfg client) (listAll cfg client)
 
-byId :: SubmissionRepoConfig -> SubmissionID -> IO Submission
-byId _ _ = return $ Submission "1" "2" "3" (Just "wat")
+byId :: SubmissionRepoConfig -> APIClient ->SubmissionID -> IO Submission
+byId _ _ _ = return $ Submission "1" "2" "3" (Just "wat")
 
-forTask :: SubmissionRepoConfig -> TaskID -> IO [Submission]
-forTask cfg taskId = do
-    allSubmissions <- getAllSubmissions . unpack $ cfg M.! pack "listAllUrl"
+forTask :: SubmissionRepoConfig -> APIClient -> TaskID -> IO [Submission]
+forTask cfg client taskId = do
+    allSubmissions <- getAllSubmissions cfg client
     let subsForTask = liftM (V.filter (\s -> sTid s == taskId)) allSubmissions
     case subsForTask of
         Just submissions -> return $ V.toList submissions
         _                -> return []
 
-forUser :: SubmissionRepoConfig -> UserID -> IO [Submission]
-forUser _ _ = return []
+forUser :: SubmissionRepoConfig -> APIClient -> UserID -> IO [Submission]
+forUser _ _ _ = return []
 
-listAll :: SubmissionRepoConfig -> IO [Submission]
-listAll cfg = do
-    allSubmissions <- getAllSubmissions . unpack $ cfg M.! pack "listAllUrl"
+listAll :: SubmissionRepoConfig -> APIClient -> IO [Submission]
+listAll cfg client = do
+    allSubmissions <- getAllSubmissions cfg client
     case allSubmissions of
         Just submissions -> return $ V.toList submissions
         _                -> return []
 
-getAllSubmissions :: String -> IO (Maybe (Vector Submission))
-getAllSubmissions url = do
-    jsonResp <- getJSONResource url
+getAllSubmissions :: SubmissionRepoConfig -> APIClient -> IO (Maybe (Vector Submission))
+getAllSubmissions cfg client = do
+    jsonResp <- acGetResource client $ unpack (cfg M.! (pack "listAllUrl"))
     let fpExercises = decode jsonResp :: Maybe (Vector (Vector Text))
         submissions = fmap exToSubmission <$> fpExercises
     return submissions

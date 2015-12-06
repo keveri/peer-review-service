@@ -4,6 +4,7 @@ module PeerReview.Types where
 import           Data.Aeson
 import           Data.Map                             (Map)
 import           Data.Text                            (Text)
+import           Data.ByteString.Lazy.Internal
 import qualified Data.Text.Encoding                   as T
 import qualified Database.PostgreSQL.Simple           as PG
 import qualified Database.PostgreSQL.Simple.FromField as PG
@@ -60,6 +61,11 @@ data ReviewRepo = ReviewRepo
     { rrSave          :: PeerReview -> IO ()
     , rrFindByUserId  :: UserID -> IO [PeerReview]
     , rrFindCompleted :: IO [PeerReview]
+    }
+
+-- Interface for APIClients.
+data APIClient = APIClient
+    { acGetResource :: String -> IO ByteString
     }
 
 data Env = Env

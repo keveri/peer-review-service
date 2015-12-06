@@ -16,6 +16,7 @@ library
   exposed-modules:     PeerReview.Server
                      , PeerReview.Types
                      , PeerReview.SubmissionRepo.FPCourse
+                     , PeerReview.SubmissionRepo.FPCourseAPIClient
                      , PeerReview.ReviewRepo.Postgres
                      , PeerReview.Config
                      , PeerReview.Util
