@@ -31,9 +31,7 @@ forTask :: SubmissionRepoConfig -> APIClient -> TaskID -> IO [Submission]
 forTask cfg client taskId = do
     allSubmissions <- getAllSubmissions cfg client
     let subsForTask = fmap (V.filter (\s -> sTid s == taskId)) allSubmissions
-    case subsForTask of
-        Just submissions -> return $ V.toList submissions
-        _                -> return []
+    return $ maybe [] V.toList subsForTask
 
 forUser :: SubmissionRepoConfig -> APIClient -> UserID -> IO [Submission]
 forUser _ _ _ = return []
@@ -41,9 +39,7 @@ forUser _ _ _ = return []
 listAll :: SubmissionRepoConfig -> APIClient -> IO [Submission]
 listAll cfg client = do
     allSubmissions <- getAllSubmissions cfg client
-    case allSubmissions of
-        Just submissions -> return $ V.toList submissions
-        _                -> return []
+    return $ maybe [] V.toList allSubmissions
 
 getAllSubmissions :: SubmissionRepoConfig -> APIClient -> IO (Maybe (Vector Submission))
 getAllSubmissions cfg client = do
