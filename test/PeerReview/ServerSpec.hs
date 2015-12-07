@@ -46,6 +46,9 @@ spec = before_ (wipeDb dbInfo) $ with app $ do
   describe "GET reviews for user" $
     it "responds with 200" $
       get "/peer-reviews?email=test" `shouldRespondWith` 200
+  describe "GET completed reviews" $
+    it "responds with 200" $
+      get "/peer-reviews/completed" `shouldRespondWith` 200
 
 app = do
     rRepo <- Postgres.repo dbInfo
