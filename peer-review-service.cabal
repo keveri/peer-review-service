@@ -18,11 +18,11 @@ library
                      , PeerReview.SubmissionRepo.FPCourse
                      , PeerReview.ReviewRepo.Postgres
                      , PeerReview.Config
+                     , PeerReview.Util
   other-modules:       PeerReview.API
                      , PeerReview.Core
                      , PeerReview.ReviewFinder
                      , PeerReview.ReviewRepo.Transaction
-                     , PeerReview.Util
   build-depends:       base >= 4.7 && < 5
                      , bytestring >= 0.10
                      , configurator >= 0.3
@@ -51,6 +51,7 @@ test-suite peer-review-service-test
   main-is:             Spec.hs
   other-modules:       PeerReview.ServerSpec
                      , PeerReview.SubmissionRepo.Testing
+                     , PeerReview.UtilSpec
   build-depends:       base
                      , peer-review-service
                      , aeson
