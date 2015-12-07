@@ -1,6 +1,7 @@
 [![Build Status](https://img.shields.io/travis/keveri/peer-review-service/master.svg?style=flat-square)](https://travis-ci.org/keveri/peer-review-service)
-[![BSD3 License](https://img.shields.io/badge/license-BSD3-blue.svg?style=flat-square)](https://tldrlegal.com/license/bsd-3-clause-license-%28revised%29)
 [![Coverage Status](https://img.shields.io/coveralls/keveri/peer-review-service/master.svg?style=flat-square)](https://coveralls.io/github/keveri/peer-review-service)
+[![BSD3 License](https://img.shields.io/badge/license-BSD3-blue.svg?style=flat-square)](https://tldrlegal.com/license/bsd-3-clause-license-%28revised%29)
+
 
 # Peer review service
 
