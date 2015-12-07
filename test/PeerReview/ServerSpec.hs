@@ -22,6 +22,9 @@ main = hspec spec
 
 spec :: Spec
 spec = before_ (wipeDb dbInfo) $ with app $ do
+  describe "GET non existing url" $
+    it "responds with 404" $
+      get "/non-existing-url" `shouldRespondWith` 404
   describe "GET /" $
     it "responds with 200" $
       get "/" `shouldRespondWith` 200
