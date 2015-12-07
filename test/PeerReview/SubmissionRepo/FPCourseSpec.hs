@@ -16,11 +16,18 @@ main :: IO ()
 main = hspec spec
 
 spec :: Spec
-spec =
-  describe ".listAll" $
+spec = do
+  describe ".listAll" $ do
     it "parses all submissions from test data" $ do
-      allRepos <- repo >>= srAll
+      r <- repo
+      allRepos <- srAll r
       length allRepos `shouldBe` 6
+  describe ".forTask" $ do
+    it "filters submissions by task name" $ do
+      r <- repo
+      let taskID = "SimpleTypeDrivenExercise"
+      subsByTask <- srFindByTaskId r $ taskID
+      length subsByTask `shouldBe` 2
 
 repo :: IO SubmissionRepo
 repo = do
