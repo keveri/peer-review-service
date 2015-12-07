@@ -1,15 +1,15 @@
 {-# LANGUAGE OverloadedStrings #-}
 module PeerReview.SubmissionRepo.FPCourseMockAPIClient
-    (
-    client
+    ( client
     ) where
 
-import           PeerReview.Types
 import qualified Data.ByteString.Lazy as B
+
+import           PeerReview.Types
 
 client :: APIClient
 client = APIClient getResource
 
 getResource :: String -> IO B.ByteString
-getResource url =
+getResource _ =
   B.readFile "test/fixtures/FPCourse/all.json"

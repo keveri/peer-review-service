@@ -1,13 +1,13 @@
 {-# LANGUAGE OverloadedStrings #-}
 module PeerReview.SubmissionRepo.FPCourseAPIClient
-    (
-    client
+    ( client
     ) where
 
-import           PeerReview.Types
-import           Network.Wreq
 import           Control.Lens
 import           Data.ByteString.Lazy.Internal
+import           Network.Wreq
+
+import           PeerReview.Types
 
 client :: APIClient
 client = APIClient getResource

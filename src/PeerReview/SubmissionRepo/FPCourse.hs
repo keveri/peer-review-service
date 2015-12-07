@@ -4,13 +4,13 @@ module PeerReview.SubmissionRepo.FPCourse
     , repoWithClient
     ) where
 
-import           PeerReview.Types
 import           Data.Aeson
-import           Data.Vector                     as V
-import           Data.Map                        as M
+import           Data.Map                                    as M
 import           Data.Text
-import           Control.Monad
+import           Data.Vector                                 as V
+
 import qualified PeerReview.SubmissionRepo.FPCourseAPIClient as FPCourseAPIClient
+import           PeerReview.Types
 
 -- Create submission repo using endpoint configuration.
 -- Config is a map containing required endpoints for fetching data.

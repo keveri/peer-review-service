@@ -55,6 +55,8 @@ test-suite peer-review-service-test
   hs-source-dirs:      test
   main-is:             Spec.hs
   other-modules:       PeerReview.ServerSpec
+                     , PeerReview.SubmissionRepo.FPCourseSpec
+                     , PeerReview.SubmissionRepo.FPCourseMockAPIClient
                      , PeerReview.SubmissionRepo.Testing
                      , PeerReview.UtilSpec
   build-depends:       base
