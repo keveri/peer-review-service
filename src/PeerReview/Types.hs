@@ -74,7 +74,7 @@ type Content = Text
 data ReviewStatus = Waiting
                   | Reviewed
                   | Accepted
-                  deriving (Show)
+                  deriving (Show, Eq)
 
 data Submission = Submission
     { sId      :: SubmissionID
@@ -90,7 +90,7 @@ data PeerReview = PeerReview
     , prScore        :: Int
     , prReviewerId   :: UserID
     , prStatus       :: ReviewStatus
-    } deriving (Show)
+    } deriving (Show, Eq)
 
 
 instance ToJSON ReviewStatus where
