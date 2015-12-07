@@ -1,5 +1,6 @@
 module PeerReview.ReviewRepo.Postgres
     ( repo
+    , wipeDb
     ) where
 
 import           Control.Monad              (void)
@@ -17,6 +18,15 @@ repo dbi = do
     pool <- mkPoolAndInitDb dbi
     return $ ReviewRepo (saveReview pool) (findReviewsByUserId pool)
 
+wipeDb :: DBInfo -> IO ()
+wipeDb dbi = do
+    conn <- connect $ mkConnInfo dbi
+    wipe <- readFile wipeFile
+    void $ execute_ conn $ fromString wipe
+
+
+wipeFile :: FilePath
+wipeFile = "database/wipe.sql"
 
 schemaFile :: FilePath
 schemaFile = "database/schema.sql"
