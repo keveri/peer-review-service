@@ -57,8 +57,9 @@ data SubmissionRepo = SubmissionRepo
 
 -- Interface for peer review repos.
 data ReviewRepo = ReviewRepo
-    { rrSave         :: PeerReview -> IO ()
-    , rrFindByUserId :: UserID -> IO [PeerReview]
+    { rrSave          :: PeerReview -> IO ()
+    , rrFindByUserId  :: UserID -> IO [PeerReview]
+    , rrFindCompleted :: IO [PeerReview]
     }
 
 data Env = Env

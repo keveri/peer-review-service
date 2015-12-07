@@ -3,12 +3,13 @@
 module PeerReview.ReviewRepo.Transaction
     ( saveReview
     , findReviewsByUserId
+    , findCompleted
     ) where
 
 import           Control.Monad                    (void)
 import           Data.Pool                        (Pool, withResource)
 import           Database.PostgreSQL.Simple       (Connection, Only (..),
-                                                   execute, query)
+                                                   execute, query, query_)
 import           Database.PostgreSQL.Simple.SqlQQ (sql)
 
 import           PeerReview.Types
@@ -29,3 +30,12 @@ findReviewsByUserId pool uid = withResource pool (\ conn ->
         FROM peer_reviews
         WHERE reviewer_id = ?
     |] $ Only uid)
+
+-- Find peer reviews that havce been reviewed.
+findCompleted :: Pool Connection -> IO [PeerReview]
+findCompleted pool = withResource pool (\ conn ->
+    query conn [sql|
+        SELECT submission_id, task_id, comment, score, reviewer_id, status
+        FROM peer_reviews
+        WHERE status = ? OR status = ?
+    |] (Reviewed, Accepted))
