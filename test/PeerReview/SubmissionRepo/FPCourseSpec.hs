@@ -28,6 +28,12 @@ spec = do
       let taskID = "SimpleTypeDrivenExercise"
       subsByTask <- srFindByTaskId r $ taskID
       length subsByTask `shouldBe` 2
+  describe ".forUser" $ do
+    it "filters submissions by user email" $ do
+      r <- repo
+      let userID = "mikko@cc.jyu.fi"
+      subsByUser <- srFindByUserId r $ userID
+      length subsByUser `shouldBe` 3
 
 repo :: IO SubmissionRepo
 repo = do
