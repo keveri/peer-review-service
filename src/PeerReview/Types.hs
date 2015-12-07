@@ -50,7 +50,7 @@ type SubmissionRepoConfig = Map Text Text
 
 -- Interface for different submission repos.
 data SubmissionRepo = SubmissionRepo
-    { srFindById     :: SubmissionID -> IO Submission
+    { srFindById     :: SubmissionID -> IO (Maybe Submission)
     , srFindByTaskId :: TaskID -> IO [Submission]
     , srFindByUserId :: UserID -> IO [Submission]
     , srAll          :: IO [Submission]

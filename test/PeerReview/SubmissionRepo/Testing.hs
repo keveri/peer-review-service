@@ -16,8 +16,8 @@ testSubs =
     , Submission "3" "user2" "task2" Nothing
     ]
 
-byId :: SubmissionID -> IO Submission
-byId _ = return $ Submission "1" "2" "3" (Just "wat")
+byId :: SubmissionID -> IO (Maybe Submission)
+byId _ = return $ Just (Submission "1" "2" "3" (Just "wat"))
 
 forTask :: TaskID -> IO [Submission]
 forTask _ = return []

@@ -1,4 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE DeriveGeneric #-}
+
 module PeerReview.SubmissionRepo.FPCourse
     ( repo
     , repoWithClient
@@ -12,6 +14,18 @@ import           Data.Vector                                 as V
 import qualified PeerReview.SubmissionRepo.FPCourseAPIClient as FPCourseAPIClient
 import           PeerReview.Types
 
+import GHC.Generics
+
+-- datatype to parse individual
+-- fp exercise from json
+data FPExercise = FPExercise {
+      taskID   :: TaskID
+    , text     :: Content
+    , students :: [UserID]
+    } deriving (Generic, Show)
+
+instance FromJSON FPExercise
+
 -- Create submission repo using endpoint configuration.
 -- Config is a map containing required endpoints for fetching data.
 repo :: SubmissionRepoConfig -> SubmissionRepo
@@ -24,8 +38,8 @@ repoWithClient :: APIClient -> SubmissionRepoConfig -> SubmissionRepo
 repoWithClient client cfg =
     SubmissionRepo (byId cfg client) (forTask cfg client) (forUser cfg client) (listAll cfg client)
 
-byId :: SubmissionRepoConfig -> APIClient ->SubmissionID -> IO Submission
-byId _ _ _ = return $ Submission "1" "2" "3" (Just "wat")
+byId :: SubmissionRepoConfig -> APIClient -> SubmissionID -> IO (Maybe Submission)
+byId cfg client sId = getSubmission cfg client sId
 
 forTask :: SubmissionRepoConfig -> APIClient -> TaskID -> IO [Submission]
 forTask cfg client taskId = do
@@ -50,6 +64,18 @@ getAllSubmissions cfg client = do
     let fpExercises = decode jsonResp :: Maybe (Vector (Vector Text))
         submissions = fmap exercisesToSubmissions fpExercises
     return submissions
+
+getSubmission :: SubmissionRepoConfig -> APIClient -> SubmissionID -> IO (Maybe Submission)
+getSubmission cfg client subId = do
+    let submissionBaseURL = cfg M.! "byIdUrl"
+    jsonResp <- acGetResource client $ unpack (replace ":id" subId submissionBaseURL)
+    let fpExercise = decode jsonResp :: Maybe FPExercise
+        submission = fmap (exWithDetailsToSubmission subId) fpExercise
+    return submission
+
+exWithDetailsToSubmission :: SubmissionID -> FPExercise -> Submission
+exWithDetailsToSubmission sId (FPExercise tId text (student:_)) =
+     Submission sId student tId (Just text)
 
 -- Submission json structure:
 -- [email, exName, submissionID]

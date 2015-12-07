@@ -34,6 +34,15 @@ spec = do
       let userID = "mikko@cc.jyu.fi"
       subsByUser <- srFindByUserId r $ userID
       length subsByUser `shouldBe` 3
+  describe ".byId" $ do
+    it "parses submission data correctly" $ do
+      r <- repo
+      let subId = "sha1"
+      submission <- srFindById r $ subId
+      sId <$> submission `shouldBe` Just "sha1"
+      sUid <$> submission `shouldBe` Just "mikko@cc.jyu.fi"
+      sTid <$> submission `shouldBe` Just "SimpleTypeDrivenExercise"
+      sContent <$> submission `shouldBe` Just (Just "Submission Content")
 
 repo :: IO SubmissionRepo
 repo = do
