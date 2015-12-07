@@ -16,7 +16,10 @@ import           PeerReview.Types
 repo :: DBInfo -> IO ReviewRepo
 repo dbi = do
     pool <- mkPoolAndInitDb dbi
-    return $ ReviewRepo (saveReview pool) (findReviewsByUserId pool)
+    return $ ReviewRepo
+        (saveReview pool)
+        (findReviewsByUserId pool)
+        (findCompleted pool)
 
 wipeDb :: DBInfo -> IO ()
 wipeDb dbi = do

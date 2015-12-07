@@ -36,5 +36,5 @@ acceptReview :: PeerReview -> IO PeerReview
 acceptReview = return
 
 -- List of completed reviews.
-completedReviews :: IO [PeerReview]
-completedReviews = return []
+completedReviews :: Env -> IO [PeerReview]
+completedReviews = rrFindCompleted . eReviewRepo

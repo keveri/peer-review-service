@@ -37,7 +37,9 @@ list = do
 
 -- List completed reviews.
 completed :: Action ctx a
-completed = json =<< liftIO completedReviews
+completed = do
+    e <- asEnv <$> getState
+    json =<< liftIO (completedReviews e)
 
 -- Mark review as accepted.
 accept :: Action ctx a

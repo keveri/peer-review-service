@@ -22,9 +22,14 @@ main = hspec spec
 
 spec :: Spec
 spec = before_ (wipeDb dbInfo) $ with app $ do
+  describe "GET non existing url" $
+    it "responds with 404" $
+      get "/non-existing-url" `shouldRespondWith` 404
+
   describe "GET /" $
     it "responds with 200" $
       get "/" `shouldRespondWith` 200
+
   describe "GET new review" $ do
     context "when no submission can be reviewed" $
       it "responds with an error message" $ do
@@ -43,6 +48,14 @@ spec = before_ (wipeDb dbInfo) $ with app $ do
               , comment: ""
               }|]
         get "/peer-reviews/new?email=user1" `shouldRespondWith` jsonReview
+
+  describe "GET reviews for user" $
+    it "responds with 200" $
+      get "/peer-reviews?email=test" `shouldRespondWith` 200
+
+  describe "GET completed reviews" $
+    it "responds with 200" $
+      get "/peer-reviews/completed" `shouldRespondWith` 200
 
 app = do
     rRepo <- Postgres.repo dbInfo
