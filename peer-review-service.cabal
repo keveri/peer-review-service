@@ -49,6 +49,8 @@ test-suite peer-review-service-test
   type:                exitcode-stdio-1.0
   hs-source-dirs:      test
   main-is:             Spec.hs
+  other-modules:       PeerReview.ServerSpec
+                     , PeerReview.SubmissionRepo.Testing
   build-depends:       base
                      , peer-review-service
                      , aeson
