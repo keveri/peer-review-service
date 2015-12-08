@@ -5,6 +5,7 @@ module PeerReview.ServerSpec
     , spec
     ) where
 
+import           Network.Wai                       (Application)
 import           Test.Hspec
 import           Test.Hspec.Wai
 import           Test.Hspec.Wai.JSON
@@ -57,6 +58,7 @@ spec = before_ (wipeDb dbInfo) $ with app $ do
     it "responds with 200" $
       get "/peer-reviews/completed" `shouldRespondWith` 200
 
+app :: IO Application
 app = do
     rRepo <- Postgres.repo dbInfo
     let state    = AppState $ Env Testing.repo rRepo

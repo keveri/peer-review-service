@@ -9,7 +9,7 @@ module PeerReview.ReviewRepo.Transaction
 import           Control.Monad                    (void)
 import           Data.Pool                        (Pool, withResource)
 import           Database.PostgreSQL.Simple       (Connection, Only (..),
-                                                   execute, query, query_)
+                                                   execute, query)
 import           Database.PostgreSQL.Simple.SqlQQ (sql)
 
 import           PeerReview.Types
