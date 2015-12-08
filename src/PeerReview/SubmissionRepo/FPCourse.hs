@@ -38,7 +38,7 @@ repoWithClient :: APIClient -> SubmissionRepoConfig -> SubmissionRepo
 repoWithClient client cfg =
     SubmissionRepo (byId cfg client) (forTask cfg client) (forUser cfg client) (listAll cfg client)
 
-byId :: SubmissionRepoConfig -> APIClient -> SubmissionID -> IO (Maybe Submission)
+byId :: SubmissionRepoConfig -> APIClient -> SubmissionID -> IO (Maybe SubmissionDetails)
 byId = getSubmission
 
 forTask :: SubmissionRepoConfig -> APIClient -> TaskID -> IO [Submission]
@@ -65,19 +65,19 @@ getAllSubmissions cfg client = do
         submissions = fmap exercisesToSubmissions fpExercises
     return submissions
 
-getSubmission :: SubmissionRepoConfig -> APIClient -> SubmissionID -> IO (Maybe Submission)
+getSubmission :: SubmissionRepoConfig -> APIClient -> SubmissionID -> IO (Maybe SubmissionDetails)
 getSubmission cfg client subId = do
     let submissionBaseURL = cfg M.! "byIdUrl"
     jsonResp <- acGetResource client $ unpack (replace ":id" subId submissionBaseURL)
     let fpExercise = decode jsonResp :: Maybe FPExercise
-        submission = fmap (exWithDetailsToSubmission subId) fpExercise
+        submission = fmap (exToSubmissionDetails subId) fpExercise
     return submission
 
-exWithDetailsToSubmission :: SubmissionID -> FPExercise -> Submission
-exWithDetailsToSubmission sId (FPExercise tId text (student:_)) =
-     Submission sId student tId (Just text)
+exToSubmissionDetails :: SubmissionID -> FPExercise -> SubmissionDetails
+exToSubmissionDetails sId (FPExercise tId content students) =
+     SubmissionDetails sId tId students content
 
 -- Submission json structure:
 -- [email, exName, submissionID]
 exercisesToSubmissions :: Vector (Vector Text) -> Vector Submission
-exercisesToSubmissions = fmap (\v -> Submission (v V.! 2) (v V.! 0) (v V.! 1) Nothing)
+exercisesToSubmissions = fmap (\v -> Submission (v V.! 2) (v V.! 0) (v V.! 1))

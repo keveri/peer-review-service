@@ -39,10 +39,10 @@ spec = do
       r <- repo
       let subId = "sha1"
       submission <- srFindById r subId
-      sId <$> submission `shouldBe` Just "sha1"
-      sSender <$> submission `shouldBe` Just "mikko@cc.jyu.fi"
-      sTid <$> submission `shouldBe` Just "SimpleTypeDrivenExercise"
-      sContent <$> submission `shouldBe` Just (Just "Submission Content")
+      sdId <$> submission `shouldBe` Just "sha1"
+      sdParticipants <$> submission `shouldBe` Just ["mikko@cc.jyu.fi"]
+      sdTid <$> submission `shouldBe` Just "SimpleTypeDrivenExercise"
+      sdContent <$> submission `shouldBe` Just "Submission Content"
 
 repo :: IO SubmissionRepo
 repo = do

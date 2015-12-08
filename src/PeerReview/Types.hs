@@ -50,7 +50,7 @@ type SubmissionRepoConfig = Map Text Text
 
 -- Interface for different submission repos.
 data SubmissionRepo = SubmissionRepo
-    { srFindById     :: SubmissionID -> IO (Maybe Submission)
+    { srFindById     :: SubmissionID -> IO (Maybe SubmissionDetails)
     , srFindByTaskId :: TaskID -> IO [Submission]
     , srFindByUserId :: UserID -> IO [Submission]
     , srAll          :: IO [Submission]
@@ -87,7 +87,13 @@ data Submission = Submission
     { sId      :: SubmissionID
     , sSender  :: UserID
     , sTid     :: TaskID
-    , sContent :: Maybe Content
+    } deriving (Show)
+
+data SubmissionDetails = SubmissionDetails
+    { sdId           :: SubmissionID
+    , sdTid          :: TaskID
+    , sdParticipants :: [UserID]
+    , sdContent      :: Content
     } deriving (Show)
 
 data PeerReview = PeerReview
