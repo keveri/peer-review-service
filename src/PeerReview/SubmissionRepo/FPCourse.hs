@@ -39,7 +39,7 @@ repoWithClient client cfg =
     SubmissionRepo (byId cfg client) (forTask cfg client) (forUser cfg client) (listAll cfg client)
 
 byId :: SubmissionRepoConfig -> APIClient -> SubmissionID -> IO (Maybe Submission)
-byId cfg client sId = getSubmission cfg client sId
+byId = getSubmission
 
 forTask :: SubmissionRepoConfig -> APIClient -> TaskID -> IO [Submission]
 forTask cfg client taskId = do

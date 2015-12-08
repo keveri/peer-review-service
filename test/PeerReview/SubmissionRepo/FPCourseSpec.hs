@@ -17,28 +17,28 @@ main = hspec spec
 
 spec :: Spec
 spec = do
-  describe ".listAll" $ do
+  describe ".listAll" $
     it "parses all submissions from test data" $ do
       r <- repo
       allRepos <- srAll r
       length allRepos `shouldBe` 6
-  describe ".forTask" $ do
+  describe ".forTask" $
     it "filters submissions by task name" $ do
       r <- repo
       let taskID = "SimpleTypeDrivenExercise"
-      subsByTask <- srFindByTaskId r $ taskID
+      subsByTask <- srFindByTaskId r taskID
       length subsByTask `shouldBe` 2
-  describe ".forUser" $ do
+  describe ".forUser" $
     it "filters submissions by user email" $ do
       r <- repo
       let userID = "mikko@cc.jyu.fi"
-      subsByUser <- srFindByUserId r $ userID
+      subsByUser <- srFindByUserId r userID
       length subsByUser `shouldBe` 3
-  describe ".byId" $ do
+  describe ".byId" $
     it "parses submission data correctly" $ do
       r <- repo
       let subId = "sha1"
-      submission <- srFindById r $ subId
+      submission <- srFindById r subId
       sId <$> submission `shouldBe` Just "sha1"
       sUid <$> submission `shouldBe` Just "mikko@cc.jyu.fi"
       sTid <$> submission `shouldBe` Just "SimpleTypeDrivenExercise"
