@@ -85,7 +85,7 @@ data ReviewStatus = Waiting
 
 data Submission = Submission
     { sId      :: SubmissionID
-    , sUid     :: UserID
+    , sSender  :: UserID
     , sTid     :: TaskID
     , sContent :: Maybe Content
     } deriving (Show)

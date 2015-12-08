@@ -23,7 +23,7 @@ forTask :: TaskID -> IO [Submission]
 forTask _ = return []
 
 forUser :: UserID -> IO [Submission]
-forUser uid = return $ filter (\ s -> uid == sUid s) testSubs
+forUser uid = return $ filter (\ s -> uid == sSender s) testSubs
 
 getAll :: IO [Submission]
 getAll = return testSubs

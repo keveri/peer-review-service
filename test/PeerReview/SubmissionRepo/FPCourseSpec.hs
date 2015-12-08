@@ -40,7 +40,7 @@ spec = do
       let subId = "sha1"
       submission <- srFindById r subId
       sId <$> submission `shouldBe` Just "sha1"
-      sUid <$> submission `shouldBe` Just "mikko@cc.jyu.fi"
+      sSender <$> submission `shouldBe` Just "mikko@cc.jyu.fi"
       sTid <$> submission `shouldBe` Just "SimpleTypeDrivenExercise"
       sContent <$> submission `shouldBe` Just (Just "Submission Content")
 

@@ -50,7 +50,7 @@ forTask cfg client taskId = do
 forUser :: SubmissionRepoConfig -> APIClient -> UserID -> IO [Submission]
 forUser cfg client userId = do
     allSubmissions <- getAllSubmissions cfg client
-    let subsForUser = fmap (V.filter (\s -> sUid s == userId)) allSubmissions
+    let subsForUser = fmap (V.filter (\s -> sSender s == userId)) allSubmissions
     return $ maybe [] V.toList subsForUser
 
 listAll :: SubmissionRepoConfig -> APIClient -> IO [Submission]
