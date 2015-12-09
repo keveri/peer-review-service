@@ -72,7 +72,6 @@ type PeerReviewID = Int
 
 data ReviewStatus = Waiting
                   | Reviewed
-                  | Accepted
                   deriving (Show, Eq)
 
 data Submission = Submission
@@ -110,22 +109,6 @@ instance ToJSON PeerReview where
         , "reviewerId"   .= prReviewerId pr
         , "status"       .= prStatus pr
         ]
-
-instance FromJSON ReviewStatus where
-    parseJSON (String "waiting")  = pure Waiting
-    parseJSON (String "reviewed") = pure Reviewed
-    parseJSON _ = mempty
-
-instance FromJSON PeerReview where
-    parseJSON (Object v) =
-        PeerReview <$> v .: "submissionId"
-                   <*> v .: "taskId"
-                   <*> v .: "comment"
-                   <*> v .: "score"
-                   <*> v .: "reviewerId"
-                   <*> v .: "status"
-    parseJSON _ = mempty
-
 
 instance PG.FromField ReviewStatus where
     fromField f Nothing  = PG.returnError PG.UnexpectedNull f ""
