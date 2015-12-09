@@ -38,7 +38,7 @@ script/test
 ## API endpoints
 More detailed documentation for the API will be available separately.
 
-GET `/` - Show API documentation.
+GET `/` - Show API documentation OR return web client for the API.
 
 GET `/api/peer-reviews` - gets all peer reviews
 
