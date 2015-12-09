@@ -101,7 +101,6 @@ data PeerReview = PeerReview
 instance ToJSON ReviewStatus where
     toJSON Waiting  = String "waiting"
     toJSON Reviewed = String "reviewed"
-    toJSON Accepted = String "accepted"
 
 instance ToJSON PeerReview where
     toJSON pr = object
@@ -115,7 +114,6 @@ instance ToJSON PeerReview where
 instance FromJSON ReviewStatus where
     parseJSON (String "waiting")  = pure Waiting
     parseJSON (String "reviewed") = pure Reviewed
-    parseJSON (String "accepted") = pure Accepted
     parseJSON _ = mempty
 
 instance FromJSON PeerReview where
@@ -135,7 +133,6 @@ instance PG.FromField ReviewStatus where
         case T.decodeUtf8 b of
               "waiting"  -> return Waiting
               "reviewed" -> return Reviewed
-              "accepted" -> return Accepted
               _          -> error "invalid status"
 
 instance PG.FromRow ReviewStatus where
@@ -144,7 +141,6 @@ instance PG.FromRow ReviewStatus where
 instance PG.ToField ReviewStatus where
     toField Waiting  = PG.toField ("waiting"  :: Text)
     toField Reviewed = PG.toField ("reviewed" :: Text)
-    toField Accepted = PG.toField ("accepted" :: Text)
 
 instance PG.ToRow PeerReview where
     toRow (PeerReview subId tId comment score reviewerId status) =

@@ -4,8 +4,7 @@ BEGIN
   IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'status') THEN
     CREATE TYPE status AS enum (
         'waiting',
-        'reviewed',
-        'accepted'
+        'reviewed'
     );
   END IF;
 END$$;
