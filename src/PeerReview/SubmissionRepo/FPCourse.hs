@@ -1,5 +1,4 @@
 {-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE DeriveGeneric #-}
 
 module PeerReview.SubmissionRepo.FPCourse
     ( repo
@@ -14,17 +13,16 @@ import           Data.Vector                                 as V
 import qualified PeerReview.SubmissionRepo.FPCourseAPIClient as FPCourseAPIClient
 import           PeerReview.Types
 
-import GHC.Generics
-
 -- datatype to parse individual
 -- fp exercise from json
-data FPExercise = FPExercise {
-      taskID   :: TaskID
-    , text     :: Content
-    , students :: [UserID]
-    } deriving (Generic, Show)
+data FPExercise = FPExercise TaskID Content [UserID] deriving (Show)
 
-instance FromJSON FPExercise
+instance FromJSON FPExercise where
+    parseJSON (Object o) =
+        FPExercise <$> o .: "taskID"
+                   <*> o .: "text"
+                   <*> o .: "students"
+    parseJSON _ = mempty
 
 -- Create submission repo using endpoint configuration.
 -- Config is a map containing required endpoints for fetching data.
@@ -74,8 +72,8 @@ getSubmission cfg client subId = do
     return submission
 
 exToSubmissionDetails :: SubmissionID -> FPExercise -> SubmissionDetails
-exToSubmissionDetails sId (FPExercise tId content students) =
-     SubmissionDetails sId tId students content
+exToSubmissionDetails sid (FPExercise tid content students) =
+     SubmissionDetails sid tid students content
 
 -- Submission json structure:
 -- [email, exName, submissionID]

@@ -94,7 +94,7 @@ data SubmissionDetails = SubmissionDetails
     , sdTid          :: TaskID
     , sdParticipants :: [UserID]
     , sdContent      :: Content
-    } deriving (Show)
+    } deriving (Show, Eq)
 
 data PeerReview = PeerReview
     { prSubmissionId :: SubmissionID

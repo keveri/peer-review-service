@@ -5,7 +5,6 @@ module PeerReview.SubmissionRepo.FPCourseSpec
     ) where
 
 import           Test.Hspec
-import           Test.Hspec.Wai
 
 import           PeerReview.Config
 import qualified PeerReview.SubmissionRepo.FPCourse              as FPCourse
@@ -37,14 +36,17 @@ spec = do
   describe ".byId" $
     it "parses submission data correctly" $ do
       r <- repo
-      let subId = "sha1"
+      let subId  = "sha1"
+          expect = Just $ SubmissionDetails
+                            "sha1"
+                            "SimpleTypeDrivenExercise"
+                            ["mikko@cc.jyu.fi"]
+                            "Submission Content"
       submission <- srFindById r subId
-      sdId <$> submission `shouldBe` Just "sha1"
-      sdParticipants <$> submission `shouldBe` Just ["mikko@cc.jyu.fi"]
-      sdTid <$> submission `shouldBe` Just "SimpleTypeDrivenExercise"
-      sdContent <$> submission `shouldBe` Just "Submission Content"
+      submission `shouldBe` expect
 
 repo :: IO SubmissionRepo
 repo = do
     let client = FPCourseMockAPIClient.client
-    FPCourse.repoWithClient client <$> readSubmissionRepoConfig "test/fixtures/config/submission_repo.json"
+    FPCourse.repoWithClient client <$>
+        readSubmissionRepoConfig "test/fixtures/config/submission_repo.json"
