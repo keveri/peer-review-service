@@ -1,5 +1,5 @@
 {-# LANGUAGE OverloadedStrings #-}
---{-# LANGUAGE QuasiQuotes       #-}
+{-# LANGUAGE QuasiQuotes       #-}
 module PeerReview.Web.ServerSpec
     ( main
     , spec
@@ -8,7 +8,7 @@ module PeerReview.Web.ServerSpec
 import           Network.Wai                       (Application)
 import           Test.Hspec
 import           Test.Hspec.Wai
---import           Test.Hspec.Wai.JSON
+import           Test.Hspec.Wai.JSON
 import           Web.Spock.Safe                    (spock)
 import           Web.Spock.Shared                  (PoolOrConn (..),
                                                     defaultSpockCfg, spockAsApp)
@@ -28,9 +28,29 @@ spec = before_ (wipeDb dbInfo) $ with app $ do
     it "responds with 404" $
       get "/non-existing-url" `shouldRespondWith` 404
 
-  describe "POST create review" $
-    it "responds with 200" $
-      post "/peer-reviews/create" "" `shouldRespondWith` 200
+  describe "POST create review" $ do
+    context "when new review can be found and created" $
+      it "responds with new review" $ do
+        let jsonBody     = [json| {userID: "user1"} |]
+            jsonResponse = [json|
+                { status: "waiting"
+                , submissionId: "1"
+                , score: 0
+                , reviewerId: "user1"
+                , comment: ""
+                } |]
+        post "/peer-reviews/create" jsonBody `shouldRespondWith` jsonResponse
+    context "when new review can't be found" $
+      it "responds with an error message" $ do
+        let jsonBody  = [json| {userID: "test"} |]
+        let jsonError = [json|
+            { code: 1
+            , message: "No submissions to review."
+            } |]
+        post "/peer-reviews/create" jsonBody `shouldRespondWith` jsonError
+    context "when JSON body is invalid" $
+      it "reponds with server error" $
+        post "/peer-reviews/create" "" `shouldRespondWith` 400
 
   describe "PUT update review" $
     it "responds with 200" $

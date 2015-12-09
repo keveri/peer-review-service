@@ -14,7 +14,7 @@ import           PeerReview.Web.Types
 
 create :: Action ctx a
 create = do
-    let email = "user1"
+    email <- crbUid <$> jsonBody'
     e <- asEnv <$> getState
     eReview <- liftIO (findTaskToReview e email)
     either json json eReview
