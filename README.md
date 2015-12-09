@@ -40,10 +40,15 @@ More detailed documentation for the API will be available separately.
 
 GET `/` - Show API documentation.
 
-GET `/peer-reviews` - returns peer reviews done by given email.
+GET `/api/peer-reviews` - gets all peer reviews
 
-GET `/peer-reviews/new` - returns reviewable task for email if one can be found.
+Accepts the following filters:
+* `filter[task]=:taskId`     - filters reviews by task
+* `filter[reviewer]=:email`  - filters reviews in which user is the reviewer.
+* `filter[reviewee]=:email`  - filters peer reviews in which user is the reviewee.
 
-PUT `/peer-reviews/:id` - update review.
+GET `/api/peer-reviews/:id`  - finds review by id
 
-GET `/peer-reviews/completed` - returns a list of completed peer reviews that still need to be checked by an 'admin'. These are grouped by the submission they are reviewing. Definition of complete can be for example 3 PASS reviews for one submission.
+POST `/api/peer-reviews/create` - creates a new empty peer review for user
+
+PUT `/api/peer-reviews/:id`     - updates a peer review
