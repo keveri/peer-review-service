@@ -28,5 +28,10 @@ listReviewsForUser = rrFindByUserId . eReviewRepo
 updateReview :: IO PeerReview
 updateReview = return $ PeerReview "" "" "" 1 "" Reviewed
 
-findReview :: Int -> IO PeerReview
-findReview _ = return $ PeerReview "" "" "" 1 "" Reviewed
+findReview :: Env -> PeerReviewID -> IO (Either ErrorMessage PeerReview)
+findReview env rid = do
+    let err = ErrorMessage "Not found." 404
+    mReview <- rrFindById (eReviewRepo env) rid
+    case mReview of
+        Nothing -> return $ Left err
+        Just r  -> return $ Right r

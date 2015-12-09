@@ -30,4 +30,7 @@ list = do
     json =<< liftIO (listReviewsForUser e email)
 
 find :: Int -> Action ctx a
-find _ = json =<< liftIO (findReview 0)
+find rid = do
+    env     <- asEnv <$> getState
+    eResult <- liftIO (findReview env rid)
+    either json json eResult

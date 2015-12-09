@@ -3,6 +3,7 @@
 module PeerReview.ReviewRepo.Transaction
     ( saveReview
     , findReviewsByUserId
+    , findById
     , findCompleted
     ) where
 
@@ -39,3 +40,16 @@ findCompleted pool = withResource pool (\ conn ->
         FROM peer_reviews
         WHERE status = ? OR status = ?
     |] (Reviewed, Accepted))
+
+-- Find peer review by id.
+findById :: Pool Connection -> PeerReviewID -> IO (Maybe PeerReview)
+findById pool rid = withResource pool (\ conn -> do
+    review <- query conn [sql|
+        SELECT submission_id, task_id, comment, score, reviewer_id, status
+        FROM peer_reviews
+        WHERE id = ?
+    |] $ Only rid
+    case review of
+        [r] -> return $ Just r
+        _   -> return Nothing
+    )

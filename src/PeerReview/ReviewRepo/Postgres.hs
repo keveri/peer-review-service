@@ -18,6 +18,7 @@ repo dbi = do
     pool <- mkPoolAndInitDb dbi
     return $ ReviewRepo
         (saveReview pool)
+        (findById pool)
         (findReviewsByUserId pool)
         (findCompleted pool)
 

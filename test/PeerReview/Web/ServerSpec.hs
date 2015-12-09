@@ -60,9 +60,26 @@ spec = before_ (wipeDb dbInfo) $ with app $ do
     it "responds with 200" $
       get "/peer-reviews" `shouldRespondWith` 200
 
-  describe "GET find review" $
-    it "responds with 200" $
-      get "/peer-reviews/1" `shouldRespondWith` 200
+  describe "GET find review" $ do
+    context "when review id exists" $
+      it "responds with an review JSON" $ do
+        let rev1         = PeerReview "1" "task1" "ok" 3 "user1" Reviewed
+            jsonResponse = [json|
+                { status: "reviewed"
+                , submissionId: "1"
+                , score: 3
+                , reviewerId: "user1"
+                , comment: "ok"
+                } |]
+        liftIO (saveReview rev1)
+        get "/peer-reviews/1" `shouldRespondWith` jsonResponse
+    context "when review id doesn't exist" $
+      it "responds with an error message" $ do
+        let jsonError = [json|
+                { code: 404
+                , message: "Not found."
+                } |]
+        get "/peer-reviews/1" `shouldRespondWith` jsonError
 
 app :: IO Application
 app = do
@@ -70,6 +87,12 @@ app = do
     let state    = AppState $ Env Testing.repo rRepo
         spockCfg = defaultSpockCfg Nothing PCNoDatabase state
     spockAsApp $ spock spockCfg service
+
+-- FIXME: this isn't a nice way of creating test data."
+saveReview :: PeerReview -> IO ()
+saveReview pr = do
+    rRepo <- Postgres.repo dbInfo
+    rrSave rRepo pr
 
 dbInfo :: DBInfo
 dbInfo = DBInfo "localhost" 5432 "test" "test" "peer_review_test"

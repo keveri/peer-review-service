@@ -49,6 +49,7 @@ data SubmissionRepo = SubmissionRepo
 -- Interface for peer review repos.
 data ReviewRepo = ReviewRepo
     { rrSave          :: PeerReview -> IO ()
+    , rrFindById      :: PeerReviewID -> IO (Maybe PeerReview)
     , rrFindByUserId  :: UserID -> IO [PeerReview]
     , rrFindCompleted :: IO [PeerReview]
     }
@@ -67,6 +68,8 @@ type UserID = Text
 type TaskID = Text
 type SubmissionID = Text
 type Content = Text
+
+type PeerReviewID = Int
 
 data ReviewStatus = Waiting
                   | Reviewed
