@@ -1,6 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE QuasiQuotes       #-}
-module PeerReview.ServerSpec
+module PeerReview.Web.ServerSpec
     ( main
     , spec
     ) where
@@ -14,9 +14,10 @@ import           Web.Spock.Shared                  (PoolOrConn (..),
                                                     defaultSpockCfg, spockAsApp)
 
 import           PeerReview.ReviewRepo.Postgres    as Postgres
-import           PeerReview.Server                 (service)
 import           PeerReview.SubmissionRepo.Testing as Testing
 import           PeerReview.Types
+import           PeerReview.Web.Server             (service)
+import           PeerReview.Web.Types
 
 main :: IO ()
 main = hspec spec

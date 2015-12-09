@@ -1,5 +1,5 @@
 {-# LANGUAGE OverloadedStrings #-}
-module PeerReview.Server
+module PeerReview.Web.Server
     ( runServer
     , service -- Exposed for testing.
     ) where
@@ -7,8 +7,9 @@ module PeerReview.Server
 import           Network.Wai.Middleware.RequestLogger
 import           Web.Spock.Safe
 
-import           PeerReview.API                       as API
 import           PeerReview.Types
+import           PeerReview.Web.API                   as API
+import           PeerReview.Web.Types
 
 -- Run the spock app using given configuration file.
 runServer :: AppConfig -> Env -> IO ()
