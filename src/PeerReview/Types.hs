@@ -104,6 +104,7 @@ instance ToJSON ReviewStatus where
 instance ToJSON PeerReview where
     toJSON pr = object
         [ "submissionId" .= prSubmissionId pr
+        , "taskId"       .= prTaskId pr
         , "comment"      .= prComment pr
         , "score"        .= prScore pr
         , "reviewerId"   .= prReviewerId pr

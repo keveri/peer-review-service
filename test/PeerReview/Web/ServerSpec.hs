@@ -38,6 +38,7 @@ spec = before_ (wipeDb dbInfo) $ with app $ do
                 , score: 0
                 , reviewerId: "user1"
                 , comment: ""
+                , taskId: "task1"
                 } |]
         post "/peer-reviews/create" jsonBody `shouldRespondWith` jsonResponse
     context "when new review can't be found" $
@@ -70,6 +71,7 @@ spec = before_ (wipeDb dbInfo) $ with app $ do
                 , score: 3
                 , reviewerId: "user1"
                 , comment: "ok"
+                , taskId: "task1"
                 } |]
         liftIO (saveReview rev1)
         get "/peer-reviews/1" `shouldRespondWith` jsonResponse
