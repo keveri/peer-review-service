@@ -4,6 +4,7 @@ module PeerReview.Types where
 import           Data.Aeson
 import           Data.Map                             (Map)
 import           Data.Text                            (Text)
+import           Data.ByteString.Lazy.Internal
 import qualified Data.Text.Encoding                   as T
 import qualified Database.PostgreSQL.Simple           as PG
 import qualified Database.PostgreSQL.Simple.FromField as PG
@@ -49,7 +50,7 @@ type SubmissionRepoConfig = Map Text Text
 
 -- Interface for different submission repos.
 data SubmissionRepo = SubmissionRepo
-    { srFindById     :: SubmissionID -> IO Submission
+    { srFindById     :: SubmissionID -> IO (Maybe SubmissionDetails)
     , srFindByTaskId :: TaskID -> IO [Submission]
     , srFindByUserId :: UserID -> IO [Submission]
     , srAll          :: IO [Submission]
@@ -60,6 +61,11 @@ data ReviewRepo = ReviewRepo
     { rrSave          :: PeerReview -> IO ()
     , rrFindByUserId  :: UserID -> IO [PeerReview]
     , rrFindCompleted :: IO [PeerReview]
+    }
+
+-- Interface for APIClients.
+data APIClient = APIClient
+    { acGetResource :: String -> IO ByteString
     }
 
 data Env = Env
@@ -79,10 +85,16 @@ data ReviewStatus = Waiting
 
 data Submission = Submission
     { sId      :: SubmissionID
-    , sUid     :: UserID
+    , sSender  :: UserID
     , sTid     :: TaskID
-    , sContent :: Maybe Content
-    }
+    } deriving (Show)
+
+data SubmissionDetails = SubmissionDetails
+    { sdId           :: SubmissionID
+    , sdTid          :: TaskID
+    , sdParticipants :: [UserID]
+    , sdContent      :: Content
+    } deriving (Show, Eq)
 
 data PeerReview = PeerReview
     { prSubmissionId :: SubmissionID

@@ -16,6 +16,7 @@ library
   exposed-modules:     PeerReview.Server
                      , PeerReview.Types
                      , PeerReview.SubmissionRepo.FPCourse
+                     , PeerReview.SubmissionRepo.FPCourseAPIClient
                      , PeerReview.ReviewRepo.Postgres
                      , PeerReview.Config
                      , PeerReview.Util
@@ -35,6 +36,10 @@ library
                      , resource-pool >= 0.2
                      --, time >= 1.5
                      , aeson >= 0.8
+                     , wreq >= 0.4
+                     , lens >= 4.12
+                     , vector >= 0.10
+                     , bytestring >= 0.10
   default-language:    Haskell2010
 
 executable peer-review-service-exe
@@ -50,9 +55,12 @@ test-suite peer-review-service-test
   hs-source-dirs:      test
   main-is:             Spec.hs
   other-modules:       PeerReview.ServerSpec
+                     , PeerReview.SubmissionRepo.FPCourseSpec
+                     , PeerReview.SubmissionRepo.FPCourseMockAPIClient
                      , PeerReview.SubmissionRepo.Testing
                      , PeerReview.UtilSpec
   build-depends:       base
+                     , bytestring >= 0.10
                      , peer-review-service
                      , aeson
                      , hspec

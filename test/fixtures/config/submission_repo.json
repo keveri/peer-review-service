@@ -1,0 +1,3 @@
+{"listAllUrl": "testURLAll",
+ "byIdUrl":    "testURLById/:id"
+}

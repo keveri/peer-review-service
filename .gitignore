@@ -3,3 +3,4 @@
 # Config files
 *.cfg
 *.json
+!test/fixtures/**/*.json

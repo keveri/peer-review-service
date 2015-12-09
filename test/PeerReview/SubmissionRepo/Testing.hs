@@ -11,19 +11,19 @@ repo = SubmissionRepo byId forTask forUser getAll
 
 testSubs :: [Submission]
 testSubs =
-    [ Submission "1" "user1" "task1" Nothing
-    , Submission "2" "user2" "task1" Nothing
-    , Submission "3" "user2" "task2" Nothing
+    [ Submission "1" "user1" "task1"
+    , Submission "2" "user2" "task1"
+    , Submission "3" "user2" "task2"
     ]
 
-byId :: SubmissionID -> IO Submission
-byId _ = return $ Submission "1" "2" "3" (Just "wat")
+byId :: SubmissionID -> IO (Maybe SubmissionDetails)
+byId _ = return $ Just (SubmissionDetails "1" "2" ["3"] "wat")
 
 forTask :: TaskID -> IO [Submission]
 forTask _ = return []
 
 forUser :: UserID -> IO [Submission]
-forUser uid = return $ filter (\ s -> uid == sUid s) testSubs
+forUser uid = return $ filter (\ s -> uid == sSender s) testSubs
 
 getAll :: IO [Submission]
 getAll = return testSubs
