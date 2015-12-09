@@ -1,11 +1,9 @@
 {-# LANGUAGE OverloadedStrings #-}
 module PeerReview.Web.API
-    ( new
-    , review
+    ( create
+    , update
     , list
-    , doc
-    , completed
-    , accept
+    , find
     ) where
 
 import           Control.Monad.IO.Class (liftIO)
@@ -14,39 +12,22 @@ import           Web.Spock.Shared
 import           PeerReview.Core
 import           PeerReview.Web.Types
 
--- Give a task to review if possible.
-new :: Action ctx a
-new = do
-    email <- param' "email"
+create :: Action ctx a
+create = do
+    let email = "user1"
     e <- asEnv <$> getState
     eReview <- liftIO (findTaskToReview e email)
     either json json eReview
 
--- Create peer reviews.
-review :: Action ctx a
-review = do
-    r <- jsonBody'
-    json =<< liftIO (createReview r)
+update :: Int -> Action ctx a
+update _ = json =<< liftIO updateReview
 
--- List peer reviews for user.
+-- TODO: different kind of listings.
 list :: Action ctx a
 list = do
-    email <- param' "email"
+    let email = "user1"
     e <- asEnv <$> getState
     json =<< liftIO (listReviewsForUser e email)
 
--- List completed reviews.
-completed :: Action ctx a
-completed = do
-    e <- asEnv <$> getState
-    json =<< liftIO (completedReviews e)
-
--- Mark review as accepted.
-accept :: Action ctx a
-accept = do
-    r <- jsonBody'
-    json =<< liftIO (acceptReview r)
-
--- Render API documentation.
-doc :: Action ctx a
-doc = text "API documentation."
+find :: Int -> Action ctx a
+find _ = json =<< liftIO (findReview 0)

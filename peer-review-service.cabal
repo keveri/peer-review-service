@@ -22,6 +22,7 @@ library
                      , PeerReview.Util
                      , PeerReview.Web.Types
   other-modules:       PeerReview.Web.API
+                     , PeerReview.Web.Routes
                      , PeerReview.Core
                      , PeerReview.ReviewFinder
                      , PeerReview.ReviewRepo.Transaction

@@ -2,9 +2,8 @@
 module PeerReview.Core
     ( findTaskToReview
     , listReviewsForUser
-    , createReview
-    , acceptReview
-    , completedReviews
+    , updateReview
+    , findReview
     ) where
 
 import           PeerReview.ReviewFinder
@@ -23,18 +22,11 @@ findTaskToReview env uid = do
             rrSave (eReviewRepo env) r
             return $ Right r
 
--- List all reviews done by given user.
 listReviewsForUser :: Env -> UserID -> IO [PeerReview]
 listReviewsForUser = rrFindByUserId . eReviewRepo
 
--- Create new PeerReview.
-createReview :: PeerReview -> IO PeerReview
-createReview = return
+updateReview :: IO PeerReview
+updateReview = return $ PeerReview "" "" "" 1 "" Reviewed
 
--- Mark review as accepted.
-acceptReview :: PeerReview -> IO PeerReview
-acceptReview = return
-
--- List of completed reviews.
-completedReviews :: Env -> IO [PeerReview]
-completedReviews = rrFindCompleted . eReviewRepo
+findReview :: Int -> IO PeerReview
+findReview _ = return $ PeerReview "" "" "" 1 "" Reviewed

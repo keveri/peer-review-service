@@ -1,4 +1,3 @@
-{-# LANGUAGE OverloadedStrings #-}
 module PeerReview.Web.Server
     ( runServer
     , service -- Exposed for testing.
@@ -8,7 +7,7 @@ import           Network.Wai.Middleware.RequestLogger
 import           Web.Spock.Safe
 
 import           PeerReview.Types
-import           PeerReview.Web.API                   as API
+import           PeerReview.Web.Routes as Routes
 import           PeerReview.Web.Types
 
 -- Run the spock app using given configuration file.
@@ -24,15 +23,9 @@ runServer conf env = do
 appMiddleware :: WebApp ()
 appMiddleware = middleware logStdout
 
--- Routes for the API.
+-- Combine different routes for the api.
 apiRoutes :: WebApp ()
-apiRoutes = do
-    get root                                         API.doc
-    get "/peer-reviews"                              API.list
-    put ("/peer-reviews/" <//> ":id")                API.review
-    get "/peer-reviews/new"                          API.new
-    get "/peer-reviews/completed"                    API.completed
-    put ("/peer-reviews/" <//> ":id" <//> "/accept") API.accept
+apiRoutes = Routes.peerReview
 
 -- Join middlewares and API to spock app.
 service :: WebApp ()

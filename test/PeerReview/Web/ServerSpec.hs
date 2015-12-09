@@ -1,5 +1,5 @@
 {-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE QuasiQuotes       #-}
+--{-# LANGUAGE QuasiQuotes       #-}
 module PeerReview.Web.ServerSpec
     ( main
     , spec
@@ -8,7 +8,7 @@ module PeerReview.Web.ServerSpec
 import           Network.Wai                       (Application)
 import           Test.Hspec
 import           Test.Hspec.Wai
-import           Test.Hspec.Wai.JSON
+--import           Test.Hspec.Wai.JSON
 import           Web.Spock.Safe                    (spock)
 import           Web.Spock.Shared                  (PoolOrConn (..),
                                                     defaultSpockCfg, spockAsApp)
@@ -28,36 +28,21 @@ spec = before_ (wipeDb dbInfo) $ with app $ do
     it "responds with 404" $
       get "/non-existing-url" `shouldRespondWith` 404
 
-  describe "GET /" $
+  describe "POST create review" $
     it "responds with 200" $
-      get "/" `shouldRespondWith` 200
+      post "/peer-reviews/create" "" `shouldRespondWith` 200
 
-  describe "GET new review" $ do
-    context "when no submission can be reviewed" $
-      it "responds with an error message" $ do
-        let jsonError = [json|
-              { code: 1
-              , message: "No submissions to review."
-              }|]
-        get "/peer-reviews/new?email=test" `shouldRespondWith` jsonError
-    context "when submission can be reviewed" $
-      it "responds with an peer review" $ do
-        let jsonReview = [json|
-              { status: "waiting"
-              , submissionId: "1"
-              , score: 0
-              , reviewerId: "user1"
-              , comment: ""
-              }|]
-        get "/peer-reviews/new?email=user1" `shouldRespondWith` jsonReview
-
-  describe "GET reviews for user" $
+  describe "PUT update review" $
     it "responds with 200" $
-      get "/peer-reviews?email=test" `shouldRespondWith` 200
+      put "/peer-reviews/1" "" `shouldRespondWith` 200
 
-  describe "GET completed reviews" $
+  describe "GET review listing" $
     it "responds with 200" $
-      get "/peer-reviews/completed" `shouldRespondWith` 200
+      get "/peer-reviews" `shouldRespondWith` 200
+
+  describe "GET find review" $
+    it "responds with 200" $
+      get "/peer-reviews/1" `shouldRespondWith` 200
 
 app :: IO Application
 app = do
