@@ -1,5 +1,5 @@
 {-# LANGUAGE OverloadedStrings #-}
-module PeerReview.API
+module PeerReview.Web.API
     ( new
     , review
     , list

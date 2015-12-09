@@ -3,9 +3,9 @@ module Main where
 
 import           PeerReview.Config
 import           PeerReview.ReviewRepo.Postgres     as Postgres
-import           PeerReview.Server
 import qualified PeerReview.SubmissionRepo.FPCourse as FPCourse
 import           PeerReview.Types
+import           PeerReview.Web.Server
 
 main :: IO ()
 main = do

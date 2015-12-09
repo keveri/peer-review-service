@@ -13,14 +13,14 @@ cabal-version:       >=1.10
 
 library
   hs-source-dirs:      src
-  exposed-modules:     PeerReview.Server
+  exposed-modules:     PeerReview.Web.Server
                      , PeerReview.Types
                      , PeerReview.SubmissionRepo.FPCourse
                      , PeerReview.SubmissionRepo.FPCourseAPIClient
                      , PeerReview.ReviewRepo.Postgres
                      , PeerReview.Config
                      , PeerReview.Util
-  other-modules:       PeerReview.API
+  other-modules:       PeerReview.Web.API
                      , PeerReview.Core
                      , PeerReview.ReviewFinder
                      , PeerReview.ReviewRepo.Transaction
@@ -54,7 +54,7 @@ test-suite peer-review-service-test
   type:                exitcode-stdio-1.0
   hs-source-dirs:      test
   main-is:             Spec.hs
-  other-modules:       PeerReview.ServerSpec
+  other-modules:       PeerReview.Web.ServerSpec
                      , PeerReview.SubmissionRepo.FPCourseSpec
                      , PeerReview.SubmissionRepo.FPCourseMockAPIClient
                      , PeerReview.SubmissionRepo.Testing
