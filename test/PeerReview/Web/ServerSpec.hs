@@ -17,6 +17,7 @@ import           PeerReview.ReviewRepo.Postgres    as Postgres
 import           PeerReview.SubmissionRepo.Testing as Testing
 import           PeerReview.Types
 import           PeerReview.Web.Server             (service)
+import           PeerReview.Web.Types
 
 main :: IO ()
 main = hspec spec

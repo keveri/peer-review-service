@@ -12,7 +12,7 @@ import           Control.Monad.IO.Class (liftIO)
 import           Web.Spock.Shared
 
 import           PeerReview.Core
-import           PeerReview.Types
+import           PeerReview.Web.Types
 
 -- Give a task to review if possible.
 new :: Action ctx a

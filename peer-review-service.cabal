@@ -20,6 +20,7 @@ library
                      , PeerReview.ReviewRepo.Postgres
                      , PeerReview.Config
                      , PeerReview.Util
+                     , PeerReview.Web.Types
   other-modules:       PeerReview.Web.API
                      , PeerReview.Core
                      , PeerReview.ReviewFinder

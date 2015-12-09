@@ -9,6 +9,7 @@ import           Web.Spock.Safe
 
 import           PeerReview.Types
 import           PeerReview.Web.API                   as API
+import           PeerReview.Web.Types
 
 -- Run the spock app using given configuration file.
 runServer :: AppConfig -> Env -> IO ()

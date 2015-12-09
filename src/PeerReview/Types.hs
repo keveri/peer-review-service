@@ -11,7 +11,6 @@ import qualified Database.PostgreSQL.Simple.FromField as PG
 import qualified Database.PostgreSQL.Simple.FromRow   as PG
 import qualified Database.PostgreSQL.Simple.ToField   as PG
 import qualified Database.PostgreSQL.Simple.ToRow     as PG
-import           Web.Spock.Safe
 
 data DBInfo = DBInfo
     { dbHost :: String
@@ -25,15 +24,6 @@ data AppConfig = AppConfig
     { acPort :: Int
     , acDB   :: DBInfo
     }
-
-data AppState = AppState
-    { asEnv :: Env
-    }
-
-type SessionVal = Maybe SessionId
-type WebApp ctx = SpockCtxM ctx () SessionVal AppState ()
-type Action ctx a = SpockActionCtx ctx () SessionVal AppState a
-
 
 data ErrorMessage = ErrorMessage
     { emMessage  :: Text
