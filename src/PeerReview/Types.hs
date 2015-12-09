@@ -51,7 +51,6 @@ data ReviewRepo = ReviewRepo
     { rrSave          :: PeerReview -> IO ()
     , rrFindById      :: PeerReviewID -> IO (Maybe PeerReview)
     , rrFindByUserId  :: UserID -> IO [PeerReview]
-    , rrFindCompleted :: IO [PeerReview]
     }
 
 -- Interface for APIClients.
