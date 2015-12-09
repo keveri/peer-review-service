@@ -25,7 +25,7 @@ readSubmissionRepoConfig :: FilePath -> IO SubmissionRepoConfig
 readSubmissionRepoConfig fp = do
     let errorMsg = "Couldn't parse submission repo config."
     mObj <- decode <$> LB.readFile fp
-    maybe (fail errorMsg) return mObj
+    maybe (error errorMsg) return mObj
 
 
 -- Parse database related information.

@@ -61,6 +61,7 @@ test-suite peer-review-service-test
                      , PeerReview.SubmissionRepo.FPCourseMockAPIClient
                      , PeerReview.SubmissionRepo.Testing
                      , PeerReview.UtilSpec
+                     , PeerReview.ConfigSpec
   build-depends:       base
                      , bytestring >= 0.10
                      , peer-review-service

@@ -18,7 +18,7 @@ data DBInfo = DBInfo
     , dbUser :: String
     , dbPass :: String
     , dbName :: String
-    }
+    } deriving (Show, Eq)
 
 data AppConfig = AppConfig
     { acPort :: Int
