@@ -1,3 +1,4 @@
+{-# LANGUAGE OverloadedStrings #-}
 module PeerReview.Web.Server
     ( runServer
     , service -- Exposed for testing.
@@ -25,7 +26,9 @@ appMiddleware = middleware logStdout
 
 -- Combine different routes for the api.
 apiRoutes :: WebApp ()
-apiRoutes = Routes.peerReview
+apiRoutes = do
+    get root $ text "doc or client"
+    subcomponent "api" Routes.peerReview
 
 -- Join middlewares and API to spock app.
 service :: WebApp ()

@@ -42,7 +42,7 @@ spec = before_ (wipeDb dbInfo) $ with app $ do
                 , taskId: "task1"
                 , id: 1
                 } |]
-        post "/peer-reviews/create" jsonBody `shouldRespondWith` jsonResponse
+        post "/api/peer-reviews/create" jsonBody `shouldRespondWith` jsonResponse
     context "when new review can't be found" $
       it "responds with an error message" $ do
         let jsonBody  = [json| {userID: "test"} |]
@@ -50,18 +50,18 @@ spec = before_ (wipeDb dbInfo) $ with app $ do
             { code: 1
             , message: "No submissions to review."
             } |]
-        post "/peer-reviews/create" jsonBody `shouldRespondWith` jsonError
+        post "/api/peer-reviews/create" jsonBody `shouldRespondWith` jsonError
     context "when JSON body is invalid" $
       it "reponds with server error" $
-        post "/peer-reviews/create" "" `shouldRespondWith` 400
+        post "/api/peer-reviews/create" "" `shouldRespondWith` 400
 
   describe "PUT update review" $
     it "responds with 200" $
-      put "/peer-reviews/1" "" `shouldRespondWith` 200
+      put "/api/peer-reviews/1" "" `shouldRespondWith` 200
 
   describe "GET review listing" $
     it "responds with 200" $
-      get "/peer-reviews" `shouldRespondWith` 200
+      get "/api/peer-reviews" `shouldRespondWith` 200
 
   describe "GET find review" $ do
     context "when review id exists" $
@@ -77,14 +77,14 @@ spec = before_ (wipeDb dbInfo) $ with app $ do
                 , id: 1
                 } |]
         liftIO (saveReview rev1)
-        get "/peer-reviews/1" `shouldRespondWith` jsonResponse
+        get "/api/peer-reviews/1" `shouldRespondWith` jsonResponse
     context "when review id doesn't exist" $
       it "responds with an error message" $ do
         let jsonError = [json|
                 { code: 404
                 , message: "Not found."
                 } |]
-        get "/peer-reviews/1" `shouldRespondWith` jsonError
+        get "/api/peer-reviews/1" `shouldRespondWith` jsonError
 
 app :: IO Application
 app = do
