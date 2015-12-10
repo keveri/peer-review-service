@@ -11,7 +11,7 @@ import           PeerReview.Types
 import           PeerReview.Util
 
 -- Find reviewable task for given user.
-findTaskToReview :: Env -> UserID -> IO (Either ErrorMessage PeerReview)
+findTaskToReview :: Env -> UserID -> IO (Either ErrorMessage (PeerReviewID,PeerReview))
 findTaskToReview env uid = do
     mSubmission <- findSubmissionToReview env uid
     let err     = ErrorMessage "No submissions to review." 1
@@ -19,16 +19,16 @@ findTaskToReview env uid = do
     case mReview of
         Nothing -> return $ Left err
         Just r  -> do
-            rrSave (eReviewRepo env) r
-            return $ Right r
+            rid <- rrSave (eReviewRepo env) r
+            return $ Right (rid,r)
 
-listReviewsForUser :: Env -> UserID -> IO [PeerReview]
+listReviewsForUser :: Env -> UserID -> IO [(PeerReviewID,PeerReview)]
 listReviewsForUser = rrFindByUserId . eReviewRepo
 
-updateReview :: IO PeerReview
-updateReview = return $ PeerReview "" "" "" 1 "" Reviewed
+updateReview :: IO (PeerReviewID,PeerReview)
+updateReview = return (1, PeerReview "" "" "" 1 "" Reviewed)
 
-findReview :: Env -> PeerReviewID -> IO (Either ErrorMessage PeerReview)
+findReview :: Env -> PeerReviewID -> IO (Either ErrorMessage (PeerReviewID,PeerReview))
 findReview env rid = do
     let err = ErrorMessage "Not found." 404
     mReview <- rrFindById (eReviewRepo env) rid

@@ -5,6 +5,7 @@ module PeerReview.Web.ServerSpec
     , spec
     ) where
 
+import           Control.Monad                     (void)
 import           Network.Wai                       (Application)
 import           Test.Hspec
 import           Test.Hspec.Wai
@@ -39,6 +40,7 @@ spec = before_ (wipeDb dbInfo) $ with app $ do
                 , reviewerId: "user1"
                 , comment: ""
                 , taskId: "task1"
+                , id: 1
                 } |]
         post "/peer-reviews/create" jsonBody `shouldRespondWith` jsonResponse
     context "when new review can't be found" $
@@ -72,6 +74,7 @@ spec = before_ (wipeDb dbInfo) $ with app $ do
                 , reviewerId: "user1"
                 , comment: "ok"
                 , taskId: "task1"
+                , id: 1
                 } |]
         liftIO (saveReview rev1)
         get "/peer-reviews/1" `shouldRespondWith` jsonResponse
@@ -94,7 +97,7 @@ app = do
 saveReview :: PeerReview -> IO ()
 saveReview pr = do
     rRepo <- Postgres.repo dbInfo
-    rrSave rRepo pr
+    void $ rrSave rRepo pr
 
 dbInfo :: DBInfo
 dbInfo = DBInfo "localhost" 5432 "test" "test" "peer_review_test"

@@ -2,6 +2,7 @@
 module PeerReview.Web.Types where
 
 import           Data.Aeson
+import           Data.Text        (Text)
 import           Web.Spock.Safe
 
 import           PeerReview.Types
@@ -22,3 +23,24 @@ instance FromJSON CreateReviewBody where
     parseJSON (Object o) =
         CreateReviewBody <$> o .: "userID"
     parseJSON _ = mempty
+
+data ReviewWithId = ReviewWithId
+    { rwId           :: PeerReviewID
+    , rwSubmissionId :: SubmissionID
+    , rwTaskId       :: TaskID
+    , rwComment      :: Text
+    , rwScore        :: Int
+    , rwReviewerId   :: UserID
+    , rwStatus       :: ReviewStatus
+    }
+
+instance ToJSON ReviewWithId where
+    toJSON rw = object
+        [ "id"           .= rwId rw
+        , "submissionId" .= rwSubmissionId rw
+        , "taskId"       .= rwTaskId rw
+        , "comment"      .= rwComment rw
+        , "score"        .= rwScore rw
+        , "reviewerId"   .= rwReviewerId rw
+        , "status"       .= rwStatus rw
+        ]

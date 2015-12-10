@@ -20,10 +20,10 @@ findSubmissionToReview (Env sr rr) uid = do
 
 
 -- Already reviewed tasks are not candidates for the next review.
-candidates :: [Submission] -> [PeerReview] -> [TaskID]
+candidates :: [Submission] -> [(PeerReviewID,PeerReview)] -> [TaskID]
 candidates ss prs =
     let submitted = Set.fromList $ map sTid ss
-        reviewed  = Set.fromList $ map prTaskId prs
+        reviewed  = Set.fromList $ map (prTaskId . snd) prs
     in Set.toList $ submitted Set.\\ reviewed
 
 -- Just try to use the first task id.

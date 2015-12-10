@@ -2,15 +2,17 @@
 module PeerReview.Types where
 
 import           Data.Aeson
+import           Data.ByteString.Lazy.Internal
 import           Data.Map                             (Map)
 import           Data.Text                            (Text)
-import           Data.ByteString.Lazy.Internal
 import qualified Data.Text.Encoding                   as T
 import qualified Database.PostgreSQL.Simple           as PG
 import qualified Database.PostgreSQL.Simple.FromField as PG
 import qualified Database.PostgreSQL.Simple.FromRow   as PG
 import qualified Database.PostgreSQL.Simple.ToField   as PG
 import qualified Database.PostgreSQL.Simple.ToRow     as PG
+
+import           GHC.Int
 
 data DBInfo = DBInfo
     { dbHost :: String
@@ -26,8 +28,8 @@ data AppConfig = AppConfig
     }
 
 data ErrorMessage = ErrorMessage
-    { emMessage  :: Text
-    , emCode     :: Int
+    { emMessage :: Text
+    , emCode    :: Int
     }
 
 instance ToJSON ErrorMessage where
@@ -48,9 +50,9 @@ data SubmissionRepo = SubmissionRepo
 
 -- Interface for peer review repos.
 data ReviewRepo = ReviewRepo
-    { rrSave          :: PeerReview -> IO ()
-    , rrFindById      :: PeerReviewID -> IO (Maybe PeerReview)
-    , rrFindByUserId  :: UserID -> IO [PeerReview]
+    { rrSave         :: PeerReview -> IO PeerReviewID
+    , rrFindById     :: PeerReviewID -> IO (Maybe (PeerReviewID,PeerReview))
+    , rrFindByUserId :: UserID -> IO [(PeerReviewID,PeerReview)]
     }
 
 -- Interface for APIClients.
@@ -68,16 +70,16 @@ type TaskID = Text
 type SubmissionID = Text
 type Content = Text
 
-type PeerReviewID = Int
+type PeerReviewID = Int64
 
 data ReviewStatus = Waiting
                   | Reviewed
                   deriving (Show, Eq)
 
 data Submission = Submission
-    { sId      :: SubmissionID
-    , sSender  :: UserID
-    , sTid     :: TaskID
+    { sId     :: SubmissionID
+    , sSender :: UserID
+    , sTid    :: TaskID
     } deriving (Show)
 
 data SubmissionDetails = SubmissionDetails
@@ -96,20 +98,9 @@ data PeerReview = PeerReview
     , prStatus       :: ReviewStatus
     } deriving (Show, Eq)
 
-
 instance ToJSON ReviewStatus where
     toJSON Waiting  = String "waiting"
     toJSON Reviewed = String "reviewed"
-
-instance ToJSON PeerReview where
-    toJSON pr = object
-        [ "submissionId" .= prSubmissionId pr
-        , "taskId"       .= prTaskId pr
-        , "comment"      .= prComment pr
-        , "score"        .= prScore pr
-        , "reviewerId"   .= prReviewerId pr
-        , "status"       .= prStatus pr
-        ]
 
 instance PG.FromField ReviewStatus where
     fromField f Nothing  = PG.returnError PG.UnexpectedNull f ""
@@ -119,9 +110,6 @@ instance PG.FromField ReviewStatus where
               "reviewed" -> return Reviewed
               _          -> error "invalid status"
 
-instance PG.FromRow ReviewStatus where
-    fromRow = PG.field
-
 instance PG.ToField ReviewStatus where
     toField Waiting  = PG.toField ("waiting"  :: Text)
     toField Reviewed = PG.toField ("reviewed" :: Text)
@@ -129,12 +117,3 @@ instance PG.ToField ReviewStatus where
 instance PG.ToRow PeerReview where
     toRow (PeerReview subId tId comment score reviewerId status) =
         PG.toRow (subId, tId, comment, score, reviewerId, status)
-
-instance PG.FromRow PeerReview where
-    fromRow =
-        PeerReview <$> PG.field
-                   <*> PG.field
-                   <*> PG.field
-                   <*> PG.field
-                   <*> PG.field
-                   <*> PG.field
