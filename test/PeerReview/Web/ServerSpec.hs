@@ -46,11 +46,7 @@ spec = before_ (wipeDb dbInfo) $ with app $ do
     context "when new review can't be found" $
       it "responds with an error message" $ do
         let jsonBody  = [json| {userID: "test"} |]
-        let jsonError = [json|
-            { code: 1
-            , message: "No submissions to review."
-            } |]
-        post "/api/peer-reviews/create" jsonBody `shouldRespondWith` jsonError
+        post "/api/peer-reviews/create" jsonBody `shouldRespondWith` 404
     context "when JSON body is invalid" $
       it "reponds with server error" $
         post "/api/peer-reviews/create" "" `shouldRespondWith` 400
@@ -90,12 +86,8 @@ spec = before_ (wipeDb dbInfo) $ with app $ do
         liftIO (saveReview rev1)
         get "/api/peer-reviews/1" `shouldRespondWith` jsonResponse
     context "when review id doesn't exist" $
-      it "responds with an error message" $ do
-        let jsonError = [json|
-                { code: 404
-                , message: "Not found."
-                } |]
-        get "/api/peer-reviews/1" `shouldRespondWith` jsonError
+      it "responds with an error" $
+        get "/api/peer-reviews/1" `shouldRespondWith` 404
 
 app :: IO Application
 app = do

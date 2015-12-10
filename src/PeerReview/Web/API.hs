@@ -21,7 +21,7 @@ create = do
     email <- crbUid <$> jsonBody'
     e <- asEnv <$> getState
     eReview <- liftIO (findTaskToReview e email)
-    either json json (reviewResponse <$> eReview)
+    maybe json404 json (reviewResponse <$> eReview)
 
 update :: Int -> Action ctx a
 update rid = do
@@ -42,8 +42,11 @@ find :: Int -> Action ctx a
 find rid = do
     env     <- asEnv <$> getState
     eResult <- liftIO (findReview env (fromIntegral rid))
-    either json json (reviewResponse <$> eResult)
+    maybe json404 json (reviewResponse <$> eResult)
 
+
+json404 :: Action ctx a
+json404 = setStatus status404 >> json False
 
 -- Turn Review data into API format.
 reviewResponse :: (PeerReviewID,PeerReview) -> ReviewResponse
