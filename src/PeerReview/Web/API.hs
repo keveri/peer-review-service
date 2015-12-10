@@ -18,26 +18,26 @@ create = do
     email <- crbUid <$> jsonBody'
     e <- asEnv <$> getState
     eReview <- liftIO (findTaskToReview e email)
-    either json json (reviewWithId <$> eReview)
+    either json json (reviewResponse <$> eReview)
 
 update :: Int -> Action ctx a
-update _ = json =<< liftIO (reviewWithId <$> updateReview)
+update _ = json =<< liftIO (reviewResponse <$> updateReview)
 
 -- TODO: different kind of listings.
 list :: Action ctx a
 list = do
     let email = "user1"
     e <- asEnv <$> getState
-    json =<< liftIO (fmap reviewWithId <$> listReviewsForUser e email)
+    json =<< liftIO (fmap reviewResponse <$> listReviewsForUser e email)
 
 find :: Int -> Action ctx a
 find rid = do
     env     <- asEnv <$> getState
     eResult <- liftIO (findReview env (fromIntegral rid))
-    either json json (reviewWithId <$> eResult)
+    either json json (reviewResponse <$> eResult)
 
 
 -- Turn Review data into API format.
-reviewWithId :: (PeerReviewID,PeerReview) -> ReviewResponse
-reviewWithId (rid, PeerReview sid tid c score revid status) =
+reviewResponse :: (PeerReviewID,PeerReview) -> ReviewResponse
+reviewResponse (rid, PeerReview sid tid c score revid status) =
     ReviewResponse rid sid tid c score revid status
