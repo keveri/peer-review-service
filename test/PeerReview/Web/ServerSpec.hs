@@ -67,9 +67,17 @@ spec = before_ (wipeDb dbInfo) $ with app $ do
         let jsonBody = [json| {comment: "gj", score: 3} |]
         put "/api/peer-reviews/1" jsonBody `shouldRespondWith` 404
 
-  describe "GET review listing" $
-    it "responds with 200" $
-      get "/api/peer-reviews" `shouldRespondWith` 200
+  describe "GET review listing" $ do
+    context "when using filters" $ do
+      it "can filter by task" $
+        get "/api/peer-reviews?filter[task]=task1" `shouldRespondWith` 200
+      it "can filter by reviewer" $
+        get "/api/peer-reviews?filter[reviewer]=user1" `shouldRespondWith` 200
+      it "returns error with incorrect filter" $
+        get "/api/peer-reviews?filter[wat]=wat" `shouldRespondWith` 404
+    context "when using no filters" $
+      it "responds with full listing of reviews" $
+        get "/api/peer-reviews" `shouldRespondWith` 200
 
   describe "GET find review" $ do
     context "when review id exists" $

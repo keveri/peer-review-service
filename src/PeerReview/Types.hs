@@ -41,6 +41,8 @@ data ReviewRepo = ReviewRepo
     { rrSave         :: PeerReview -> IO PeerReviewID
     , rrFindById     :: PeerReviewID -> IO (Maybe (PeerReviewID,PeerReview))
     , rrFindByUserId :: UserID -> IO [(PeerReviewID,PeerReview)]
+    , rrFindByTaskId :: TaskID -> IO [(PeerReviewID,PeerReview)]
+    , rrAll          :: IO [(PeerReviewID,PeerReview)]
     , rrUpdate       :: PeerReviewID -> (Comment, Score) -> IO Bool
     }
 
@@ -53,6 +55,9 @@ data Env = Env
     { eSubmissionRepo :: SubmissionRepo
     , eReviewRepo     :: ReviewRepo
     }
+
+data ReviewFilter a = ByTask a
+                    | ByReviewer a
 
 type UserID = Text
 type TaskID = Text
