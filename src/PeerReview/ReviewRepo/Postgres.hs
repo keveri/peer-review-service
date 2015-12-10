@@ -20,6 +20,7 @@ repo dbi = do
         (saveReview pool)
         (findById pool)
         (findReviewsByUserId pool)
+        (update pool)
 
 wipeDb :: DBInfo -> IO ()
 wipeDb dbi = do

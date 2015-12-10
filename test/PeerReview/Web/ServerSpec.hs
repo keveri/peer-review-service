@@ -55,9 +55,20 @@ spec = before_ (wipeDb dbInfo) $ with app $ do
       it "reponds with server error" $
         post "/api/peer-reviews/create" "" `shouldRespondWith` 400
 
-  describe "PUT update review" $
-    it "responds with 200" $
-      put "/api/peer-reviews/1" "" `shouldRespondWith` 200
+  describe "PUT update review" $ do
+    context "json data is correct" $
+      it "responds with 200" $ do
+        let rev1     = PeerReview "1" "task1" "" 0 "user1" Waiting
+            jsonBody = [json| {comment: "gj", score: 3} |]
+        liftIO (saveReview rev1)
+        put "/api/peer-reviews/1" jsonBody `shouldRespondWith` 200
+    context "json data is incorrect" $
+      it "responds with error" $
+        put "/api/peer-reviews/1" "" `shouldRespondWith` 400
+    context "review doesn't exist" $
+      it "responds with notfound error" $ do
+        let jsonBody = [json| {comment: "gj", score: 3} |]
+        put "/api/peer-reviews/1" jsonBody `shouldRespondWith` 404
 
   describe "GET review listing" $
     it "responds with 200" $

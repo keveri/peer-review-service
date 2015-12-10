@@ -24,6 +24,17 @@ instance FromJSON CreateReviewBody where
         CreateReviewBody <$> o .: "userID"
     parseJSON _ = mempty
 
+data UpadeReviewBody = UpadeReviewBody
+    { urbComment :: Text
+    , urbScore   :: Int
+    }
+
+instance FromJSON UpadeReviewBody where
+    parseJSON (Object o) =
+        UpadeReviewBody <$> o .: "comment"
+                        <*> o .: "score"
+    parseJSON _ = mempty
+
 data ReviewResponse = ReviewResponse
     { rwId           :: PeerReviewID
     , rwSubmissionId :: SubmissionID

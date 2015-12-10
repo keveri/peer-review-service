@@ -4,6 +4,7 @@ module PeerReview.ReviewRepo.Transaction
     ( saveReview
     , findReviewsByUserId
     , findById
+    , update
     ) where
 
 import           Data.Pool                        (Pool, withResource)
@@ -45,6 +46,20 @@ findById pool rid = withResource pool (\ conn -> do
         [r] -> return $ Just $ rowToPair r
         _   -> return Nothing
     )
+
+-- Update review score and comment.
+update :: Pool Connection -> PeerReviewID -> (Text, Int) -> IO Bool
+update pool rid (c,s) = withResource pool (\ conn -> do
+    modified <- execute conn [sql|
+        UPDATE peer_reviews
+        SET comment = ?, score = ?, status = ?
+        WHERE id = ?
+    |] (c, s, Reviewed, rid)
+    case modified of
+        1 -> return True
+        _ -> return False
+    )
+
 
 
 -- Turn a row from DB to a pair of id and review.
