@@ -29,6 +29,10 @@ spec = before_ (wipeDb dbInfo) $ with app $ do
     it "responds with 404" $
       get "/non-existing-url" `shouldRespondWith` 404
 
+  describe "GET root url" $
+    it "responds with 200" $
+      get "/" `shouldRespondWith` 200
+
   describe "POST create review" $ do
     context "when new review can be found and created" $
       it "responds with new review" $ do
