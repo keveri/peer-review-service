@@ -8,7 +8,6 @@ module PeerReview.ReviewRepo.Transaction
     ) where
 
 import           Data.Pool                        (Pool, withResource)
-import           Data.Text                        (Text)
 import           Database.PostgreSQL.Simple       (Connection, Only (..),
                                                    execute, query)
 import           Database.PostgreSQL.Simple.SqlQQ (sql)
@@ -48,7 +47,7 @@ findById pool rid = withResource pool (\ conn -> do
     )
 
 -- Update review score and comment.
-update :: Pool Connection -> PeerReviewID -> (Text, Int) -> IO Bool
+update :: Pool Connection -> PeerReviewID -> (Comment, Score) -> IO Bool
 update pool rid (c,s) = withResource pool (\ conn -> do
     modified <- execute conn [sql|
         UPDATE peer_reviews
@@ -66,8 +65,8 @@ update pool rid (c,s) = withResource pool (\ conn -> do
 rowToPair :: ( PeerReviewID
              , SubmissionID
              , TaskID
-             , Text
-             , Int
+             , Comment
+             , Score
              , UserID
              , ReviewStatus )
              -> (PeerReviewID, PeerReview)

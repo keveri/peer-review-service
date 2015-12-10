@@ -41,7 +41,7 @@ data ReviewRepo = ReviewRepo
     { rrSave         :: PeerReview -> IO PeerReviewID
     , rrFindById     :: PeerReviewID -> IO (Maybe (PeerReviewID,PeerReview))
     , rrFindByUserId :: UserID -> IO [(PeerReviewID,PeerReview)]
-    , rrUpdate       :: PeerReviewID -> (Text, Int) -> IO Bool
+    , rrUpdate       :: PeerReviewID -> (Comment, Score) -> IO Bool
     }
 
 -- Interface for APIClients.
@@ -58,6 +58,8 @@ type UserID = Text
 type TaskID = Text
 type SubmissionID = Text
 type Content = Text
+type Comment = Text
+type Score = Int
 
 type PeerReviewID = Int64
 
@@ -81,8 +83,8 @@ data SubmissionDetails = SubmissionDetails
 data PeerReview = PeerReview
     { prSubmissionId :: SubmissionID
     , prTaskId       :: TaskID
-    , prComment      :: Text
-    , prScore        :: Int
+    , prComment      :: Comment
+    , prScore        :: Score
     , prReviewerId   :: UserID
     , prStatus       :: ReviewStatus
     } deriving (Show, Eq)

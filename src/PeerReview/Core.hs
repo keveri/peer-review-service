@@ -6,8 +6,6 @@ module PeerReview.Core
     , findReview
     ) where
 
-import           Data.Text               (Text)
-
 import           PeerReview.ReviewFinder
 import           PeerReview.Types
 import           PeerReview.Util
@@ -25,7 +23,7 @@ findTaskToReview env uid = do
 listReviewsForUser :: Env -> UserID -> IO [(PeerReviewID,PeerReview)]
 listReviewsForUser = rrFindByUserId . eReviewRepo
 
-updateReview :: Env -> PeerReviewID -> (Text, Int) -> IO Bool
+updateReview :: Env -> PeerReviewID -> (Comment, Score) -> IO Bool
 updateReview = rrUpdate . eReviewRepo
 
 findReview :: Env -> PeerReviewID -> IO (Maybe (PeerReviewID,PeerReview))
