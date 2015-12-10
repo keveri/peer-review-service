@@ -18,15 +18,15 @@ import           PeerReview.Types
 saveReview :: Pool Connection -> PeerReview -> IO PeerReviewID
 saveReview pool pr = withResource pool (\ conn ->
     execute conn [sql|
-        INSERT INTO peer_reviews (submission_id, task_id,comment,score,reviewer_id,status)
-        VALUES (?,?,?,?,?,?)
+        INSERT INTO peer_reviews (submission_id, task_id, submission_content, comment, score, reviewer_id, status)
+        VALUES (?,?,?,?,?,?,?)
     |] pr)
 
 -- Find all reviews for given User ID.
 findReviewsByUserId :: Pool Connection -> UserID -> IO [(PeerReviewID,PeerReview)]
 findReviewsByUserId pool uid = withResource pool (\ conn -> do
     reviews <- query conn [sql|
-        SELECT id, submission_id, task_id, comment, score, reviewer_id, status
+        SELECT id, submission_id, task_id, submission_content, comment, score, reviewer_id, status
         FROM peer_reviews
         WHERE reviewer_id = ?
     |] $ Only uid
@@ -37,7 +37,7 @@ findReviewsByUserId pool uid = withResource pool (\ conn -> do
 findById :: Pool Connection -> PeerReviewID -> IO (Maybe (PeerReviewID,PeerReview))
 findById pool rid = withResource pool (\ conn -> do
     review <- query conn [sql|
-        SELECT id, submission_id, task_id, comment, score, reviewer_id, status
+        SELECT id, submission_id, task_id, submission_content, comment, score, reviewer_id, status
         FROM peer_reviews
         WHERE id = ?
     |] $ Only rid
@@ -65,10 +65,11 @@ update pool rid (c,s) = withResource pool (\ conn -> do
 rowToPair :: ( PeerReviewID
              , SubmissionID
              , TaskID
+             , Content
              , Comment
              , Score
              , UserID
              , ReviewStatus )
              -> (PeerReviewID, PeerReview)
-rowToPair (prid, sid, tid, c, score, rid, status) =
-    (prid, PeerReview sid tid c score rid status)
+rowToPair (prid, sid, tid, sc, c, score, rid, status) =
+    (prid, PeerReview sid tid sc c score rid status)

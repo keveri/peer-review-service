@@ -40,6 +40,7 @@ spec = before_ (wipeDb dbInfo) $ with app $ do
                 , reviewerId: "user1"
                 , comment: ""
                 , taskId: "task1"
+                , submissionContent: "wat"
                 , id: 1
                 } |]
         post "/api/peer-reviews/create" jsonBody `shouldRespondWith` jsonResponse
@@ -54,7 +55,7 @@ spec = before_ (wipeDb dbInfo) $ with app $ do
   describe "PUT update review" $ do
     context "json data is correct" $
       it "responds with 200" $ do
-        let rev1     = PeerReview "1" "task1" "" 0 "user1" Waiting
+        let rev1     = PeerReview "1" "task1" "abc" "" 0 "user1" Waiting
             jsonBody = [json| {comment: "gj", score: 3} |]
         liftIO (saveReview rev1)
         put "/api/peer-reviews/1" jsonBody `shouldRespondWith` 200
@@ -73,7 +74,7 @@ spec = before_ (wipeDb dbInfo) $ with app $ do
   describe "GET find review" $ do
     context "when review id exists" $
       it "responds with an review JSON" $ do
-        let rev1         = PeerReview "1" "task1" "ok" 3 "user1" Reviewed
+        let rev1         = PeerReview "1" "task1" "abc" "ok" 3 "user1" Reviewed
             jsonResponse = [json|
                 { status: "reviewed"
                 , submissionId: "1"
@@ -81,6 +82,7 @@ spec = before_ (wipeDb dbInfo) $ with app $ do
                 , reviewerId: "user1"
                 , comment: "ok"
                 , taskId: "task1"
+                , submissionContent: "abc"
                 , id: 1
                 } |]
         liftIO (saveReview rev1)

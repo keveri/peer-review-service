@@ -81,12 +81,13 @@ data SubmissionDetails = SubmissionDetails
     } deriving (Show, Eq)
 
 data PeerReview = PeerReview
-    { prSubmissionId :: SubmissionID
-    , prTaskId       :: TaskID
-    , prComment      :: Comment
-    , prScore        :: Score
-    , prReviewerId   :: UserID
-    , prStatus       :: ReviewStatus
+    { prSubmissionId      :: SubmissionID
+    , prTaskId            :: TaskID
+    , prSubmissionContent :: Content
+    , prComment           :: Comment
+    , prScore             :: Score
+    , prReviewerId        :: UserID
+    , prStatus            :: ReviewStatus
     } deriving (Show, Eq)
 
 instance ToJSON ReviewStatus where
@@ -106,5 +107,5 @@ instance PG.ToField ReviewStatus where
     toField Reviewed = PG.toField ("reviewed" :: Text)
 
 instance PG.ToRow PeerReview where
-    toRow (PeerReview subId tId comment score reviewerId status) =
-        PG.toRow (subId, tId, comment, score, reviewerId, status)
+    toRow (PeerReview subId tId sContent comment score reviewerId status) =
+        PG.toRow (subId, tId, sContent, comment, score, reviewerId, status)

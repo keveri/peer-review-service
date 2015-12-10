@@ -13,8 +13,8 @@ import           PeerReview.Util
 -- Find reviewable task for given user.
 findTaskToReview :: Env -> UserID -> IO (Maybe (PeerReviewID,PeerReview))
 findTaskToReview env uid = do
-    mSubmission <- findSubmissionToReview env uid
-    case reviewFromSub uid <$> mSubmission of
+    mSubmissionData <- findSubmissionToReview env uid
+    case reviewFromSub uid <$> mSubmissionData of
         Nothing -> return Nothing
         Just r  -> do
             rid <- rrSave (eReviewRepo env) r

@@ -36,22 +36,24 @@ instance FromJSON UpadeReviewBody where
     parseJSON _ = mempty
 
 data ReviewResponse = ReviewResponse
-    { rwId           :: PeerReviewID
-    , rwSubmissionId :: SubmissionID
-    , rwTaskId       :: TaskID
-    , rwComment      :: Text
-    , rwScore        :: Int
-    , rwReviewerId   :: UserID
-    , rwStatus       :: ReviewStatus
+    { rwId                :: PeerReviewID
+    , rwSubmissionId      :: SubmissionID
+    , rwTaskId            :: TaskID
+    , rwSubmissionContent :: Content
+    , rwComment           :: Text
+    , rwScore             :: Int
+    , rwReviewerId        :: UserID
+    , rwStatus            :: ReviewStatus
     }
 
 instance ToJSON ReviewResponse where
     toJSON rw = object
-        [ "id"           .= rwId rw
-        , "submissionId" .= rwSubmissionId rw
-        , "taskId"       .= rwTaskId rw
-        , "comment"      .= rwComment rw
-        , "score"        .= rwScore rw
-        , "reviewerId"   .= rwReviewerId rw
-        , "status"       .= rwStatus rw
+        [ "id"                .= rwId rw
+        , "submissionId"      .= rwSubmissionId rw
+        , "taskId"            .= rwTaskId rw
+        , "submissionContent" .= rwSubmissionContent rw
+        , "comment"           .= rwComment rw
+        , "score"             .= rwScore rw
+        , "reviewerId"        .= rwReviewerId rw
+        , "status"            .= rwStatus rw
         ]

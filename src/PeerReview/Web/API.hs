@@ -50,5 +50,5 @@ json404 = setStatus status404 >> json False
 
 -- Turn Review data into API format.
 reviewResponse :: (PeerReviewID,PeerReview) -> ReviewResponse
-reviewResponse (rid, PeerReview sid tid c score revid status) =
-    ReviewResponse rid sid tid c score revid status
+reviewResponse (rid, PeerReview sid tid sc c score revid status) =
+    ReviewResponse rid sid tid sc c score revid status
