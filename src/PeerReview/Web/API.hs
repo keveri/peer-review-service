@@ -38,6 +38,6 @@ find rid = do
 
 
 -- Turn Review data into API format.
-reviewWithId :: (PeerReviewID,PeerReview) -> ReviewWithId
+reviewWithId :: (PeerReviewID,PeerReview) -> ReviewResponse
 reviewWithId (rid, PeerReview sid tid c score revid status) =
-    ReviewWithId rid sid tid c score revid status
+    ReviewResponse rid sid tid c score revid status

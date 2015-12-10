@@ -24,7 +24,7 @@ instance FromJSON CreateReviewBody where
         CreateReviewBody <$> o .: "userID"
     parseJSON _ = mempty
 
-data ReviewWithId = ReviewWithId
+data ReviewResponse = ReviewResponse
     { rwId           :: PeerReviewID
     , rwSubmissionId :: SubmissionID
     , rwTaskId       :: TaskID
@@ -34,7 +34,7 @@ data ReviewWithId = ReviewWithId
     , rwStatus       :: ReviewStatus
     }
 
-instance ToJSON ReviewWithId where
+instance ToJSON ReviewResponse where
     toJSON rw = object
         [ "id"           .= rwId rw
         , "submissionId" .= rwSubmissionId rw
