@@ -8,7 +8,6 @@ import           Data.Text                            (Text)
 import qualified Data.Text.Encoding                   as T
 import qualified Database.PostgreSQL.Simple           as PG
 import qualified Database.PostgreSQL.Simple.FromField as PG
-import qualified Database.PostgreSQL.Simple.FromRow   as PG
 import qualified Database.PostgreSQL.Simple.ToField   as PG
 import qualified Database.PostgreSQL.Simple.ToRow     as PG
 
