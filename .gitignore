@@ -3,4 +3,7 @@
 # Config files
 *.cfg
 *.json
+
+# Don't ignore testing related files
 !test/fixtures/**/*.json
+!test/fixtures/**/*.cfg

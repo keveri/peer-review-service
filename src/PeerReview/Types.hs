@@ -2,15 +2,16 @@
 module PeerReview.Types where
 
 import           Data.Aeson
+import           Data.ByteString.Lazy.Internal
 import           Data.Map                             (Map)
 import           Data.Text                            (Text)
-import           Data.ByteString.Lazy.Internal
 import qualified Data.Text.Encoding                   as T
 import qualified Database.PostgreSQL.Simple           as PG
 import qualified Database.PostgreSQL.Simple.FromField as PG
-import qualified Database.PostgreSQL.Simple.FromRow   as PG
 import qualified Database.PostgreSQL.Simple.ToField   as PG
 import qualified Database.PostgreSQL.Simple.ToRow     as PG
+
+import           GHC.Int
 
 data DBInfo = DBInfo
     { dbHost :: String
@@ -18,23 +19,12 @@ data DBInfo = DBInfo
     , dbUser :: String
     , dbPass :: String
     , dbName :: String
-    }
+    } deriving (Show, Eq)
 
 data AppConfig = AppConfig
     { acPort :: Int
     , acDB   :: DBInfo
     }
-
-data ErrorMessage = ErrorMessage
-    { emMessage  :: Text
-    , emCode     :: Int
-    }
-
-instance ToJSON ErrorMessage where
-    toJSON em = object
-        [ "message" .= emMessage em
-        , "code"    .= emCode em
-        ]
 
 type SubmissionRepoConfig = Map Text Text
 
@@ -48,9 +38,12 @@ data SubmissionRepo = SubmissionRepo
 
 -- Interface for peer review repos.
 data ReviewRepo = ReviewRepo
-    { rrSave          :: PeerReview -> IO ()
-    , rrFindByUserId  :: UserID -> IO [PeerReview]
-    , rrFindCompleted :: IO [PeerReview]
+    { rrSave         :: PeerReview -> IO PeerReviewID
+    , rrFindById     :: PeerReviewID -> IO (Maybe (PeerReviewID,PeerReview))
+    , rrFindByUserId :: UserID -> IO [(PeerReviewID,PeerReview)]
+    , rrFindByTaskId :: TaskID -> IO [(PeerReviewID,PeerReview)]
+    , rrAll          :: IO [(PeerReviewID,PeerReview)]
+    , rrUpdate       :: PeerReviewID -> (Comment, Score) -> IO Bool
     }
 
 -- Interface for APIClients.
@@ -63,20 +56,26 @@ data Env = Env
     , eReviewRepo     :: ReviewRepo
     }
 
+data ReviewFilter a = ByTask a
+                    | ByReviewer a
+
 type UserID = Text
 type TaskID = Text
 type SubmissionID = Text
 type Content = Text
+type Comment = Text
+type Score = Int
+
+type PeerReviewID = Int64
 
 data ReviewStatus = Waiting
                   | Reviewed
-                  | Accepted
                   deriving (Show, Eq)
 
 data Submission = Submission
-    { sId      :: SubmissionID
-    , sSender  :: UserID
-    , sTid     :: TaskID
+    { sId     :: SubmissionID
+    , sSender :: UserID
+    , sTid    :: TaskID
     } deriving (Show)
 
 data SubmissionDetails = SubmissionDetails
@@ -87,45 +86,18 @@ data SubmissionDetails = SubmissionDetails
     } deriving (Show, Eq)
 
 data PeerReview = PeerReview
-    { prSubmissionId :: SubmissionID
-    , prTaskId       :: TaskID
-    , prComment      :: Text
-    , prScore        :: Int
-    , prReviewerId   :: UserID
-    , prStatus       :: ReviewStatus
+    { prSubmissionId      :: SubmissionID
+    , prTaskId            :: TaskID
+    , prSubmissionContent :: Content
+    , prComment           :: Comment
+    , prScore             :: Score
+    , prReviewerId        :: UserID
+    , prStatus            :: ReviewStatus
     } deriving (Show, Eq)
-
 
 instance ToJSON ReviewStatus where
     toJSON Waiting  = String "waiting"
     toJSON Reviewed = String "reviewed"
-    toJSON Accepted = String "accepted"
-
-instance ToJSON PeerReview where
-    toJSON pr = object
-        [ "submissionId" .= prSubmissionId pr
-        , "comment"      .= prComment pr
-        , "score"        .= prScore pr
-        , "reviewerId"   .= prReviewerId pr
-        , "status"       .= prStatus pr
-        ]
-
-instance FromJSON ReviewStatus where
-    parseJSON (String "waiting")  = pure Waiting
-    parseJSON (String "reviewed") = pure Reviewed
-    parseJSON (String "accepted") = pure Accepted
-    parseJSON _ = mempty
-
-instance FromJSON PeerReview where
-    parseJSON (Object v) =
-        PeerReview <$> v .: "submissionId"
-                   <*> v .: "taskId"
-                   <*> v .: "comment"
-                   <*> v .: "score"
-                   <*> v .: "reviewerId"
-                   <*> v .: "status"
-    parseJSON _ = mempty
-
 
 instance PG.FromField ReviewStatus where
     fromField f Nothing  = PG.returnError PG.UnexpectedNull f ""
@@ -133,26 +105,12 @@ instance PG.FromField ReviewStatus where
         case T.decodeUtf8 b of
               "waiting"  -> return Waiting
               "reviewed" -> return Reviewed
-              "accepted" -> return Accepted
               _          -> error "invalid status"
-
-instance PG.FromRow ReviewStatus where
-    fromRow = PG.field
 
 instance PG.ToField ReviewStatus where
     toField Waiting  = PG.toField ("waiting"  :: Text)
     toField Reviewed = PG.toField ("reviewed" :: Text)
-    toField Accepted = PG.toField ("accepted" :: Text)
 
 instance PG.ToRow PeerReview where
-    toRow (PeerReview subId tId comment score reviewerId status) =
-        PG.toRow (subId, tId, comment, score, reviewerId, status)
-
-instance PG.FromRow PeerReview where
-    fromRow =
-        PeerReview <$> PG.field
-                   <*> PG.field
-                   <*> PG.field
-                   <*> PG.field
-                   <*> PG.field
-                   <*> PG.field
+    toRow (PeerReview subId tId sContent comment score reviewerId status) =
+        PG.toRow (subId, tId, sContent, comment, score, reviewerId, status)

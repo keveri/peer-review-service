@@ -11,19 +11,26 @@ import           PeerReview.Types
 
 
 -- A simple version of a function choosing next submnission to review.
-findSubmissionToReview :: Env -> UserID -> IO (Maybe Submission)
+findSubmissionToReview :: Env -> UserID -> IO (Maybe (Submission,SubmissionDetails))
 findSubmissionToReview (Env sr rr) uid = do
     userSubs    <- srFindByUserId sr uid
     userReviews <- rrFindByUserId rr uid
     allSubs     <- srAll sr
-    return $ pickOne allSubs $ candidates userSubs userReviews
+    let sub = pickOne allSubs $ candidates userSubs userReviews
+    case sub of
+        Nothing -> return Nothing
+        Just s  -> do
+            mDetails <- srFindById sr $ sId s
+            case mDetails of
+                Nothing -> return Nothing
+                Just d  -> return $ Just (s,d)
 
 
 -- Already reviewed tasks are not candidates for the next review.
-candidates :: [Submission] -> [PeerReview] -> [TaskID]
+candidates :: [Submission] -> [(PeerReviewID,PeerReview)] -> [TaskID]
 candidates ss prs =
     let submitted = Set.fromList $ map sTid ss
-        reviewed  = Set.fromList $ map prTaskId prs
+        reviewed  = Set.fromList $ map (prTaskId . snd) prs
     in Set.toList $ submitted Set.\\ reviewed
 
 -- Just try to use the first task id.

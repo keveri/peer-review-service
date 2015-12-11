@@ -17,9 +17,12 @@ repo :: DBInfo -> IO ReviewRepo
 repo dbi = do
     pool <- mkPoolAndInitDb dbi
     return $ ReviewRepo
-        (saveReview pool)
-        (findReviewsByUserId pool)
-        (findCompleted pool)
+        (save pool)
+        (findById pool)
+        (findByUserId pool)
+        (findByTaskId pool)
+        (findAll pool)
+        (update pool)
 
 wipeDb :: DBInfo -> IO ()
 wipeDb dbi = do
