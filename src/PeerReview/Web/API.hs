@@ -12,7 +12,7 @@ import           Control.Monad.IO.Class    (liftIO)
 import           Data.Map                  (Map)
 import qualified Data.Map                  as M
 import           Data.Text                 (Text)
-import           Network.HTTP.Types.Status (status404)
+import           Network.HTTP.Types.Status (status400, status404)
 import           Web.Spock.Shared
 
 import           PeerReview.Core
@@ -25,7 +25,7 @@ create = do
     email <- crbUid <$> jsonBody'
     e <- asEnv <$> getState
     eReview <- liftIO (findTaskToReview e email)
-    maybe json404 json (reviewResponse <$> eReview)
+    maybe (setStatus status400 >> json False) json (reviewResponse <$> eReview)
 
 update :: Int -> Action ctx a
 update rid = do

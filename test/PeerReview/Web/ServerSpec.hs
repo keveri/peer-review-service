@@ -51,7 +51,7 @@ spec = before_ (wipeDb dbInfo) $ with app $ do
     context "when new review can't be found" $
       it "responds with an error message" $ do
         let jsonBody  = [json| {userID: "test"} |]
-        post "/api/peer-reviews/create" jsonBody `shouldRespondWith` 404
+        post "/api/peer-reviews/create" jsonBody `shouldRespondWith` 400
     context "when JSON body is invalid" $
       it "reponds with server error" $
         post "/api/peer-reviews/create" "" `shouldRespondWith` 400
