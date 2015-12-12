@@ -43,6 +43,7 @@ library
                      , vector >= 0.10
                      , bytestring >= 0.10
                      , http-types >= 0.8
+                     , wai-cors >= 0.2.3
   default-language:    Haskell2010
 
 executable peer-review-service-exe
@@ -72,6 +73,7 @@ test-suite peer-review-service-test
                      , hspec-wai-json
                      , Spock
                      , wai
+                     , wai-cors
   ghc-options:         -threaded -rtsopts -with-rtsopts=-N
   default-language:    Haskell2010
 
