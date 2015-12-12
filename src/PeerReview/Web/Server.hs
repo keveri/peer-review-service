@@ -4,6 +4,7 @@ module PeerReview.Web.Server
     , service -- Exposed for testing.
     ) where
 
+import           Network.Wai.Middleware.Cors
 import           Network.Wai.Middleware.RequestLogger
 import           Web.Spock.Safe
 
@@ -22,7 +23,9 @@ runServer conf env = do
 
 -- Middlewares for the application.
 appMiddleware :: WebApp ()
-appMiddleware = middleware logStdout
+appMiddleware = do
+    middleware logStdout
+    middleware simpleCors
 
 -- Combine different routes for the api.
 apiRoutes :: WebApp ()
