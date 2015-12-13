@@ -13,37 +13,35 @@ cabal-version:       >=1.10
 
 library
   hs-source-dirs:      src
-  exposed-modules:     PeerReview.Web.Server
-                     , PeerReview.Types
+  exposed-modules:     PeerReview.Config
+                     , PeerReview.ReviewRepo.Postgres
                      , PeerReview.SubmissionRepo.FPCourse
                      , PeerReview.SubmissionRepo.FPCourseAPIClient
-                     , PeerReview.ReviewRepo.Postgres
-                     , PeerReview.Config
+                     , PeerReview.Types
                      , PeerReview.Util
+                     , PeerReview.Web.Server
                      , PeerReview.Web.Types
-  other-modules:       PeerReview.Web.API
-                     , PeerReview.Web.Routes
-                     , PeerReview.Core
+  other-modules:       PeerReview.Core
                      , PeerReview.ReviewFinder
                      , PeerReview.ReviewRepo.Transaction
-  build-depends:       base >= 4.7 && < 5
+                     , PeerReview.Web.API
+                     , PeerReview.Web.Routes
+  build-depends:       aeson >= 0.8
+                     , base >= 4.7 && < 5
                      , bytestring >= 0.10
                      , configurator >= 0.3
                      , containers >= 0.5
-                     , wai-extra >= 3.0
-                     , Spock >= 0.10
+                     , http-types >= 0.8
+                     , lens >= 4.12
                      , postgresql-simple >= 0.4
+                     , resource-pool >= 0.2
+                     , Spock >= 0.10
                      , text >= 1.2
                      , transformers >= 0.4
-                     , resource-pool >= 0.2
-                     --, time >= 1.5
-                     , aeson >= 0.8
-                     , wreq >= 0.4
-                     , lens >= 4.12
                      , vector >= 0.10
-                     , bytestring >= 0.10
-                     , http-types >= 0.8
                      , wai-cors >= 0.2.3
+                     , wai-extra >= 3.0
+                     , wreq >= 0.4
   default-language:    Haskell2010
 
 executable peer-review-service-exe
@@ -58,19 +56,19 @@ test-suite peer-review-service-test
   type:                exitcode-stdio-1.0
   hs-source-dirs:      test
   main-is:             Spec.hs
-  other-modules:       PeerReview.Web.ServerSpec
-                     , PeerReview.SubmissionRepo.FPCourseSpec
+  other-modules:       PeerReview.ConfigSpec
                      , PeerReview.SubmissionRepo.FPCourseMockAPIClient
+                     , PeerReview.SubmissionRepo.FPCourseSpec
                      , PeerReview.SubmissionRepo.Testing
                      , PeerReview.UtilSpec
-                     , PeerReview.ConfigSpec
-  build-depends:       base
-                     , bytestring >= 0.10
-                     , peer-review-service
-                     , aeson
+                     , PeerReview.Web.ServerSpec
+  build-depends:       aeson
+                     , base
+                     , bytestring
                      , hspec
                      , hspec-wai
                      , hspec-wai-json
+                     , peer-review-service
                      , Spock
                      , wai
                      , wai-cors
