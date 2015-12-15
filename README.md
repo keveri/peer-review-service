@@ -5,7 +5,7 @@
 
 # Peer review service
 
-Web service for handling course peer reviews.
+Web service for handling course peer reviews. The first version is done with only one course in mind. Allthough it will have abstractions for data sources it will require some work to be more general solution.
 
 ## Development
 This project requires following tools:
@@ -33,6 +33,12 @@ script/run
 
 ```
 script/test
+```
+
+For test coverage run:
+```
+stack clean
+stack test --docker --coverage
 ```
 
 ## API endpoints
