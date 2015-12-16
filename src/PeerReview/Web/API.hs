@@ -7,7 +7,7 @@ module PeerReview.Web.API
     ) where
 
 import           Control.Arrow             ((&&&))
-import           Control.Monad             (unless)
+import           Control.Monad             (unless, (<=<))
 import           Control.Monad.IO.Class    (liftIO)
 import           Data.Map                  (Map)
 import qualified Data.Map                  as M
@@ -41,11 +41,10 @@ list :: Action ctx a
 list = do
     ps <- params
     e  <- asEnv <$> getState
-    if length ps < 1 then
-        json =<< liftIO (fmap reviewResponse <$> listReviews e Nothing) else
-        case pickFilter ps of
-            Nothing -> json404
-            p       -> json =<< liftIO (fmap reviewResponse <$> listReviews e p)
+    let listWithFilter f = liftIO (fmap reviewResponse <$> listReviews e f)
+    if length ps < 1
+        then json =<< listWithFilter Nothing
+        else maybe json404 (json <=< listWithFilter . Just) $ pickFilter ps
 
 find :: Int -> Action ctx a
 find rid = do
